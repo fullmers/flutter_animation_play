@@ -6,7 +6,7 @@ void main() {
   runApp(MyApp());
 }
 
-const double scaleFactor = 10;
+const double scaleFactor = 3;
 
 class MyApp extends StatelessWidget {
   @override
@@ -30,17 +30,34 @@ class FibSpiral extends StatefulWidget {
   _FibSpiralState createState() => _FibSpiralState();
 }
 
-class _FibSpiralState extends State<FibSpiral> {
+class _FibSpiralState extends State<FibSpiral> with SingleTickerProviderStateMixin {
   final _fibNumbers = [1, 1];
-  final _sequenceLength = 10;
+  final _sequenceLength = 14;
   final List<FibRect> _fibRects = [];
   late Offset _startCenter;
   late Path _spiralPath;
+  late AnimationController _controller;
+
+  static final spiralPathAnim = Tween<double>(
+    begin: 0,
+    end: .5,
+  );
 
   @override
   void initState() {
     super.initState();
-    _startCenter = Offset(300, 200);
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 5),
+      reverseDuration: Duration(seconds: 1),
+    );
+    spiralPathAnim.animate(_controller)
+      ..addListener(() {
+        setState(() {});
+      })
+      ..addStatusListener((status) {});
+
+    _startCenter = Offset(400, 400);
     for (var i = 0; i < _sequenceLength; i++) {
       _addNextFibNumber();
     }
@@ -49,7 +66,7 @@ class _FibSpiralState extends State<FibSpiral> {
     _spiralPath = Path();
     for (final fibRect in _fibRects) {
       final nextPath = _getSpiralPathFromRect(fibRect.rect, fibRect.direction);
-      _spiralPath.addPath(nextPath, Offset.zero);
+      _spiralPath.extendWithPath(nextPath, Offset.zero);
     }
   }
 
@@ -63,21 +80,43 @@ class _FibSpiralState extends State<FibSpiral> {
         foregroundPainter: FibPainter(
           rects: _fibRects,
           spiralPath: _spiralPath,
+          progress: _controller.value,
         ),
         child: Container(
           color: Colors.lightBlueAccent,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _animateSpiral,
-        tooltip: 'Generate',
-        child: Icon(Icons.add),
+      floatingActionButton: Row(
+        children: [
+          FloatingActionButton(
+            onPressed: _reset,
+            tooltip: 'reset',
+            child: Icon(Icons.replay),
+          ),
+          FloatingActionButton(
+            onPressed: _animateSpiral,
+            tooltip: 'Play',
+            child: Icon(Icons.play_arrow),
+          ),
+          FloatingActionButton(
+            onPressed: _reverse,
+            tooltip: 'reverse',
+            child: Icon(Icons.fast_rewind_rounded),
+          ),
+          FloatingActionButton(
+            onPressed: _pause,
+            tooltip: 'pause',
+            child: Icon(Icons.pause),
+          ),
+        ],
       ),
     );
   }
 
   void _animateSpiral() {
-    setState(() {});
+    setState(() {
+      _controller.forward();
+    });
   }
 
   Direction _getNextDirection(Direction currentDir) {
@@ -216,7 +255,25 @@ class _FibSpiralState extends State<FibSpiral> {
     Path path = Path();
     path
       ..moveTo(startCorner.dx, startCorner.dy)
-      ..conicTo(p1dx, p1dy, p2dx, p2dy, .8);
+      ..conicTo(p1dx, p1dy, p2dx, p2dy, .66);
     return path;
+  }
+
+  void _reset() {
+    setState(() {
+      _controller.reset();
+    });
+  }
+
+  void _reverse() {
+    setState(() {
+      _controller.reverse();
+    });
+  }
+
+  void _pause() {
+    setState(() {
+      _controller.stop();
+    });
   }
 }

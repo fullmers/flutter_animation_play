@@ -1,13 +1,17 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class FibPainter extends CustomPainter {
   FibPainter({
     required this.rects,
     required this.spiralPath,
+    required this.progress,
   });
 
   final List<FibRect> rects;
   final Path spiralPath;
+  final double progress;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -16,11 +20,19 @@ class FibPainter extends CustomPainter {
     paint.style = PaintingStyle.stroke;
     paint.color = Colors.purple;
 
-    for (FibRect fibRect in rects) {
+    /* for (FibRect fibRect in rects) {
       print(fibRect);
       canvas.drawRect(fibRect.rect, paint);
     }
-    canvas.drawPath(spiralPath, paint);
+      canvas.drawPath(spiralPath, paint);*/
+
+    List<PathMetric> pathMetrics = spiralPath.computeMetrics().toList(growable: true);
+    PathMetric lastPathMetric = pathMetrics.removeLast();
+    Path extractPath = lastPathMetric.extractPath(
+      0.0,
+      lastPathMetric.length * progress,
+    );
+    canvas.drawPath(extractPath, paint);
   }
 
   @override
