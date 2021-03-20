@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 class FibPainter extends CustomPainter {
   FibPainter({
     required this.rects,
+    required this.spiralPath,
   });
 
   final List<FibRect> rects;
+  final Path spiralPath;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -18,6 +20,7 @@ class FibPainter extends CustomPainter {
       print(fibRect);
       canvas.drawRect(fibRect.rect, paint);
     }
+    canvas.drawPath(spiralPath, paint);
   }
 
   @override

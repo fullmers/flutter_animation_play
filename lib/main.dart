@@ -34,17 +34,23 @@ class _FibSpiralState extends State<FibSpiral> {
   final _fibNumbers = [1, 1];
   final _sequenceLength = 10;
   final List<FibRect> _fibRects = [];
-  late Offset startCenter;
+  late Offset _startCenter;
+  late Path _spiralPath;
 
   @override
   void initState() {
     super.initState();
-    startCenter = Offset(300, 200);
+    _startCenter = Offset(300, 200);
     for (var i = 0; i < _sequenceLength; i++) {
       _addNextFibNumber();
     }
 
     _constructFibRects();
+    _spiralPath = Path();
+    for (final fibRect in _fibRects) {
+      final nextPath = _getSpiralPathFromRect(fibRect.rect, fibRect.direction);
+      _spiralPath.addPath(nextPath, Offset.zero);
+    }
   }
 
   @override
@@ -56,6 +62,7 @@ class _FibSpiralState extends State<FibSpiral> {
       body: CustomPaint(
         foregroundPainter: FibPainter(
           rects: _fibRects,
+          spiralPath: _spiralPath,
         ),
         child: Container(
           color: Colors.lightBlueAccent,
@@ -90,7 +97,7 @@ class _FibSpiralState extends State<FibSpiral> {
     FibRect firstRect = FibRect(
       fibNumber: 1,
       rect: Rect.fromCenter(
-        center: startCenter,
+        center: _startCenter,
         width: scaleFactor,
         height: scaleFactor,
       ),
@@ -99,7 +106,7 @@ class _FibSpiralState extends State<FibSpiral> {
     FibRect secondRect = FibRect(
       fibNumber: 1,
       rect: Rect.fromCenter(
-        center: Offset(startCenter.dx, startCenter.dy + scaleFactor),
+        center: Offset(_startCenter.dx, _startCenter.dy + scaleFactor),
         width: scaleFactor,
         height: scaleFactor,
       ),
@@ -166,5 +173,50 @@ class _FibSpiralState extends State<FibSpiral> {
         break;
     }
     return Offset(dxOffset, dyOffset);
+  }
+
+  Path _getSpiralPathFromRect(Rect rect, Direction direction) {
+    double p1dx;
+    double p1dy;
+    double p2dx;
+    double p2dy;
+    Offset startCorner;
+
+    switch (direction) {
+      case Direction.BOTTOM:
+        startCorner = rect.topLeft;
+        p1dx = rect.bottomLeft.dx;
+        p1dy = rect.bottomLeft.dy;
+        p2dx = rect.bottomRight.dx;
+        p2dy = rect.bottomRight.dy;
+        break;
+      case Direction.RIGHT:
+        startCorner = rect.bottomLeft;
+        p1dx = rect.bottomRight.dx;
+        p1dy = rect.bottomRight.dy;
+        p2dx = rect.topRight.dx;
+        p2dy = rect.topRight.dy;
+        break;
+      case Direction.TOP:
+        startCorner = rect.bottomRight;
+        p1dx = rect.topRight.dx;
+        p1dy = rect.topRight.dy;
+        p2dx = rect.topLeft.dx;
+        p2dy = rect.topLeft.dy;
+        break;
+      case Direction.LEFT:
+        startCorner = rect.topRight;
+        p1dx = rect.topLeft.dx;
+        p1dy = rect.topLeft.dy;
+        p2dx = rect.bottomLeft.dx;
+        p2dy = rect.bottomLeft.dy;
+        break;
+    }
+
+    Path path = Path();
+    path
+      ..moveTo(startCorner.dx, startCorner.dy)
+      ..conicTo(p1dx, p1dy, p2dx, p2dy, .8);
+    return path;
   }
 }
