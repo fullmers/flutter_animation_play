@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'fibonacci_painter.dart';
+import 'FibonacciSquare.dart';
 import 'fibonacci_spiral.dart';
 
 class FibonacciCalcs {
-  static List<FibRect> buildFibRects(Offset startCenter) {
+  static List<FibonacciSquare> buildFibRects(Offset startCenter) {
     final fibNumbers = _calculateFibNumbers();
     final initRects = _buildInitFibRects(startCenter);
     return _buildFibRectSequence(fibNumbers, initRects);
@@ -19,9 +19,9 @@ class FibonacciCalcs {
     return fibNumbers;
   }
 
-  static List<FibRect> _buildInitFibRects(Offset startCenter) {
-    List<FibRect> initFibRects = [];
-    FibRect firstRect = FibRect(
+  static List<FibonacciSquare> _buildInitFibRects(Offset startCenter) {
+    List<FibonacciSquare> initFibRects = [];
+    FibonacciSquare firstRect = FibonacciSquare(
       fibNumber: 1,
       rect: Rect.fromCenter(
         center: startCenter,
@@ -30,7 +30,7 @@ class FibonacciCalcs {
       ),
       direction: Direction.LEFT,
     );
-    FibRect secondRect = FibRect(
+    FibonacciSquare secondRect = FibonacciSquare(
       fibNumber: 1,
       rect: Rect.fromCenter(
         center: Offset(startCenter.dx, startCenter.dy + scaleFactor),
@@ -44,8 +44,8 @@ class FibonacciCalcs {
     return initFibRects;
   }
 
-  static List<FibRect> _buildFibRectSequence(List<int> fibSequence, List<FibRect> initFibRects) {
-    List<FibRect> fibRects = initFibRects;
+  static List<FibonacciSquare> _buildFibRectSequence(List<int> fibSequence, List<FibonacciSquare> initFibRects) {
+    List<FibonacciSquare> fibRects = initFibRects;
     for (var i = 2; i < fibSequence.length; i++) {
       final currentRect = fibRects[i - 1];
       final newFibNumber = fibSequence[i];
@@ -55,7 +55,7 @@ class FibonacciCalcs {
         lastLastFibNum: fibSequence[i - 2],
         lastFibRect: fibRects[i - 1],
       );
-      final nextFibRect = FibRect(
+      final nextFibRect = FibonacciSquare(
         fibNumber: newFibNumber,
         direction: FibonacciCalcs._getNextDirection(currentRect.direction),
         rect: Rect.fromCenter(
@@ -85,7 +85,7 @@ class FibonacciCalcs {
   static Offset _nextCenter({
     required int lastFibNum,
     required int lastLastFibNum,
-    required FibRect lastFibRect,
+    required FibonacciSquare lastFibRect,
   }) {
     double dxOffset;
     double dyOffset;

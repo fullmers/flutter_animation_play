@@ -2,15 +2,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import 'FibonacciSquare.dart';
+
 class FibonacciPainter extends CustomPainter {
   FibonacciPainter({
     required this.spiralPath,
     required this.progress,
-    required this.rects,
+    required this.squares,
     this.showRects = false,
   });
 
-  final List<FibRect> rects;
+  final List<FibonacciSquare> squares;
   final Path spiralPath;
   final double progress;
   final bool showRects;
@@ -23,7 +25,7 @@ class FibonacciPainter extends CustomPainter {
     paint.color = Colors.purple;
 
     if (showRects) {
-      for (FibRect fibRect in rects) {
+      for (FibonacciSquare fibRect in squares) {
         print(fibRect);
         canvas.drawRect(fibRect.rect, paint);
       }
@@ -43,23 +45,3 @@ class FibonacciPainter extends CustomPainter {
     return true;
   }
 }
-
-class FibRect {
-  const FibRect({
-    required this.fibNumber,
-    required this.rect,
-    required this.direction,
-  });
-
-  final Rect rect;
-  final Direction direction;
-  final int fibNumber;
-
-  @override
-  String toString() {
-    return 'FibRect from fibNum: $fibNumber\n'
-        'center: ${rect.center.dx} ${rect.center.dy}';
-  }
-}
-
-enum Direction { BOTTOM, RIGHT, TOP, LEFT }
