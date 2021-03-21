@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import 'FibonacciSquare.dart';
+import 'fibonacci_square.dart';
 
 class FibonacciPainter extends CustomPainter {
   FibonacciPainter({
@@ -27,7 +27,7 @@ class FibonacciPainter extends CustomPainter {
     if (showRects) {
       for (FibonacciSquare fibRect in squares) {
         print(fibRect);
-        canvas.drawRect(fibRect.rect, paint);
+        canvas.drawRect(fibRect.square, paint);
       }
     }
 

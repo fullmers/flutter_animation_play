@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'FibonacciSquare.dart';
 import 'fibonacci_spiral.dart';
+import 'fibonacci_square.dart';
 
 class FibonacciCalcs {
-  static List<FibonacciSquare> buildFibRects(Offset startCenter) {
+  static List<FibonacciSquare> buildFibSquares(Offset startCenter) {
     final fibNumbers = _calculateFibNumbers();
     final initRects = _buildInitFibRects(startCenter);
     return _buildFibRectSequence(fibNumbers, initRects);
@@ -23,7 +23,7 @@ class FibonacciCalcs {
     List<FibonacciSquare> initFibRects = [];
     FibonacciSquare firstRect = FibonacciSquare(
       fibNumber: 1,
-      rect: Rect.fromCenter(
+      square: Rect.fromCenter(
         center: startCenter,
         width: scaleFactor,
         height: scaleFactor,
@@ -32,7 +32,7 @@ class FibonacciCalcs {
     );
     FibonacciSquare secondRect = FibonacciSquare(
       fibNumber: 1,
-      rect: Rect.fromCenter(
+      square: Rect.fromCenter(
         center: Offset(startCenter.dx, startCenter.dy + scaleFactor),
         width: scaleFactor,
         height: scaleFactor,
@@ -58,7 +58,7 @@ class FibonacciCalcs {
       final nextFibRect = FibonacciSquare(
         fibNumber: newFibNumber,
         direction: FibonacciCalcs._getNextDirection(currentRect.direction),
-        rect: Rect.fromCenter(
+        square: Rect.fromCenter(
           center: newCenter,
           width: newLength,
           height: newLength,
@@ -90,7 +90,7 @@ class FibonacciCalcs {
     double dxOffset;
     double dyOffset;
     int nextFibNum = lastFibNum + lastLastFibNum;
-    Offset center = lastFibRect.rect.center;
+    Offset center = lastFibRect.square.center;
     Direction nextDirection = _getNextDirection(lastFibRect.direction);
 
     switch (nextDirection) {

@@ -1,8 +1,8 @@
 import 'package:animaplay/fibonacci/fibonacci_calcs.dart';
 import 'package:flutter/material.dart';
 
-import 'FibonacciSquare.dart';
 import 'fibonacci_painter.dart';
+import 'fibonacci_square.dart';
 
 const double scaleFactor = 3;
 const int sequenceLength = 12;
@@ -18,7 +18,7 @@ class FibonacciSpiral extends StatefulWidget {
 }
 
 class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProviderStateMixin {
-  final List<FibonacciSquare> _fibRects = [];
+  final List<FibonacciSquare> _fibSquares = [];
   late Path _spiralPath;
   late AnimationController _controller;
 
@@ -41,11 +41,11 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
       });
 
     final _startCenter = Offset(400, 400);
-    _fibRects.addAll(FibonacciCalcs.buildFibRects(_startCenter));
+    _fibSquares.addAll(FibonacciCalcs.buildFibSquares(_startCenter));
 
     _spiralPath = Path();
-    for (final fibRect in _fibRects) {
-      final nextPath = FibonacciCalcs.getSpiralPathFromRect(fibRect.rect, fibRect.direction);
+    for (final fibRect in _fibSquares) {
+      final nextPath = FibonacciCalcs.getSpiralPathFromRect(fibRect.square, fibRect.direction);
       _spiralPath.extendWithPath(nextPath, Offset.zero);
     }
   }
@@ -68,7 +68,7 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
           turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
           child: CustomPaint(
             foregroundPainter: FibonacciPainter(
-              squares: _fibRects,
+              squares: _fibSquares,
               spiralPath: _spiralPath,
               progress: _controller.value,
             ),
