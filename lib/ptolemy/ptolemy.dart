@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:animaplay/ptolemy/ptolemy_painter.dart';
 import 'package:flutter/material.dart';
 
 class PtolemysTheorem extends StatefulWidget {
@@ -9,25 +12,47 @@ class PtolemysTheorem extends StatefulWidget {
   _PtolemysTheoremState createState() => _PtolemysTheoremState();
 }
 
+const period = 5;
+
 class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  final _triangleSide = 300.0;
+  final _dotRadius = 10.0;
+  late double _radius;
+
   static final _animation = Tween<double>(
     begin: 0,
-    end: .5,
+    end: period * 1.0,
   );
+  late Offset _center;
+  late Offset _leftFixedDot;
+  late Offset _rtFixedDot;
 
   @override
   void initState() {
     super.initState();
+    _radius = _triangleSide / sqrt(3);
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 5),
-      reverseDuration: Duration(seconds: 1),
+      duration: Duration(seconds: period),
+      reverseDuration: Duration(seconds: period),
     );
     _animation.animate(_controller)
       ..addListener(() {
         setState(() {});
       });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // context is not available in initState, so these calcs must be done here
+    _center = Offset(
+      MediaQuery.of(context).size.width / 2,
+      MediaQuery.of(context).size.height / 2 - 100,
+    );
+    _leftFixedDot = Offset(_center.dx + _radius * 1.2, _center.dy + _radius);
+    _rtFixedDot = Offset(_center.dx + _radius * 1.4, _center.dy + _radius);
   }
 
   @override
@@ -44,9 +69,17 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
       ),
       body: Container(
         color: Colors.lightBlueAccent,
-        child: RotationTransition(
-          turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
-          child: Text('meat'),
+        child: CustomPaint(
+          painter: PtolemyPainter(
+            center: _center,
+            leftFixedDot: _leftFixedDot,
+            rtFixedDot: _rtFixedDot,
+            triangleSide: _triangleSide,
+            radius: _radius,
+            dotRadius: _dotRadius,
+            progress: _controller.value,
+            period: period,
+          ),
         ),
       ),
       floatingActionButton: Padding(
