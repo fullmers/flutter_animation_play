@@ -5,10 +5,11 @@ import 'fibonacci/fibonacci_spiral.dart';
 
 void main() {
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: MyApp(),
     title: 'Play with animations',
     theme: ThemeData(
-      primarySwatch: Colors.blue,
+      primarySwatch: Colors.blueGrey,
     ),
   ));
 }

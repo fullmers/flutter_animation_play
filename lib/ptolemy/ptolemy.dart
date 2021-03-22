@@ -16,7 +16,7 @@ const period = 5;
 
 class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  final _triangleSide = 300.0;
+  final _triangleSide = 240.0;
   final _dotRadius = 10.0;
   late double _radius;
 
@@ -48,7 +48,7 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
     super.didChangeDependencies();
     // context is not available in initState, so these calcs must be done here
     _center = Offset(
-      MediaQuery.of(context).size.width / 2,
+      MediaQuery.of(context).size.width / 2 - _radius * .1,
       MediaQuery.of(context).size.height / 2 - 100,
     );
     _leftFixedDot = Offset(_center.dx + _radius * 1.2, _center.dy + _radius);
@@ -68,9 +68,9 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
         title: Text(widget.title),
       ),
       body: Container(
-        color: Colors.lightBlueAccent,
+        //   color: Colors.lightBlueAccent,
         child: CustomPaint(
-          painter: PtolemyPainter(
+          foregroundPainter: PtolemyPainter(
             center: _center,
             leftFixedDot: _leftFixedDot,
             rtFixedDot: _rtFixedDot,
@@ -79,6 +79,9 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
             dotRadius: _dotRadius,
             progress: _controller.value,
             period: period,
+          ),
+          child: Container(
+            color: Colors.black87,
           ),
         ),
       ),
