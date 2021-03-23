@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:animaplay/ptolemy/fixed_points_for_ptolemy.dart';
 import 'package:animaplay/ptolemy/ptolemy_painter.dart';
 import 'package:flutter/material.dart';
 
@@ -15,18 +16,19 @@ class PtolemysTheorem extends StatefulWidget {
 const period = 5;
 
 class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  final _triangleSide = 240.0;
+  final _triangleSide = 300.0;
   final _dotRadius = 10.0;
+
   late double _radius;
+  late FixedPointsForPtolemy _fixedPoints;
+  late AnimationController _controller;
+
+  bool isPlaying = false;
 
   static final _animation = Tween<double>(
     begin: 0,
     end: period * 1.0,
   );
-  late Offset _center;
-  late Offset _leftFixedDot;
-  late Offset _rtFixedDot;
 
   @override
   void initState() {
@@ -35,8 +37,10 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: period),
-      reverseDuration: Duration(seconds: period),
     );
+    //AnimationController is actually an Animation<double> --
+    // it  generates a new value whenever the hardware is ready for a new frame.
+
     _animation.animate(_controller)
       ..addListener(() {
         setState(() {});
@@ -47,12 +51,26 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
   void didChangeDependencies() {
     super.didChangeDependencies();
     // context is not available in initState, so these calcs must be done here
-    _center = Offset(
+    final center = Offset(
       MediaQuery.of(context).size.width / 2 - _radius * .1,
       MediaQuery.of(context).size.height / 2 - 100,
     );
-    _leftFixedDot = Offset(_center.dx + _radius * 1.2, _center.dy + _radius);
-    _rtFixedDot = Offset(_center.dx + _radius * 1.4, _center.dy + _radius);
+
+    double theta = acos((_triangleSide / 2) / _radius);
+    double h = _radius * cos(pi / 2 - theta);
+    final pt1 = Offset(center.dx - h, center.dy - _triangleSide / 2);
+    final pt2 = Offset(center.dx + _radius, center.dy); //pt to right.
+    final pt3 = Offset(pt1.dx, pt1.dy + _triangleSide); //bottom left
+    final leftFixedDot = Offset(center.dx + _radius * 1.2, center.dy + _radius);
+    final rtFixedDot = Offset(center.dx + _radius * 1.4, center.dy + _radius);
+    _fixedPoints = FixedPointsForPtolemy(
+      center: center,
+      leftFixedPt: leftFixedDot,
+      rtFixedPt: rtFixedDot,
+      refTrianglePt1: pt1,
+      refTrianglePt2: pt2,
+      refTrianglePt3: pt3,
+    );
   }
 
   @override
@@ -68,17 +86,13 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
         title: Text(widget.title),
       ),
       body: Container(
-        //   color: Colors.lightBlueAccent,
         child: CustomPaint(
           foregroundPainter: PtolemyPainter(
-            center: _center,
-            leftFixedDot: _leftFixedDot,
-            rtFixedDot: _rtFixedDot,
             triangleSide: _triangleSide,
             radius: _radius,
             dotRadius: _dotRadius,
             progress: _controller.value,
-            period: period,
+            fixedPts: _fixedPoints,
           ),
           child: Container(
             color: Colors.black87,
@@ -90,7 +104,7 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
         child: Row(
           children: [
             Semantics(
-              label: 'reset',
+              label: 'Reset',
               child: ElevatedButton(
                 onPressed: _reset,
                 child: Icon(Icons.replay),
@@ -103,29 +117,9 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
               label: 'Play',
               child: ElevatedButton(
                 onPressed: _play,
-                child: Icon(Icons.play_arrow),
+                child: isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
               ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Semantics(
-              label: 'reverse',
-              child: ElevatedButton(
-                onPressed: _reverse,
-                child: Icon(Icons.fast_rewind_rounded),
-              ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Semantics(
-              label: 'pause',
-              child: ElevatedButton(
-                onPressed: _pause,
-                child: Icon(Icons.pause),
-              ),
-            ),
+            )
           ],
         ),
       ),
@@ -134,25 +128,19 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
 
   void _play() {
     setState(() {
-      _controller.repeat();
+      if (isPlaying == false) {
+        _controller.repeat();
+        isPlaying = true;
+      } else {
+        _controller.stop();
+        isPlaying = false;
+      }
     });
   }
 
   void _reset() {
     setState(() {
       _controller.reset();
-    });
-  }
-
-  void _reverse() {
-    setState(() {
-      _controller.reverse();
-    });
-  }
-
-  void _pause() {
-    setState(() {
-      _controller.stop();
     });
   }
 }
