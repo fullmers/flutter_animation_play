@@ -7,14 +7,12 @@ import 'package:flutter/material.dart';
 
 class PtolemyPainter extends CustomPainter {
   PtolemyPainter({
-    required this.triangleSide,
     required this.radius,
     required this.dotRadius,
     required this.progress,
     required this.fixedPts,
   });
 
-  final double triangleSide;
   final double radius;
   final double dotRadius;
   final double progress;
@@ -71,7 +69,7 @@ class PtolemyPainter extends CustomPainter {
   void _drawMovingLines({
     required Offset movingPt,
   }) {
-    //draw the reference fixed dots on the side
+    // draw the reference fixed dots on the side
     _paint.color = _refDotColor;
     _canvas?.drawCircle(fixedPts.leftFixedPt, dotRadius, _paint);
     _canvas?.drawCircle(fixedPts.rtFixedPt, dotRadius, _paint);
@@ -90,7 +88,7 @@ class PtolemyPainter extends CustomPainter {
     _paint.color = chord3Color;
     _canvas?.drawLine(fixedPts.refTrianglePt3, movingPt, _paint);
 
-    //calculate the length of each line
+    // calculate the length of each line
     final chord1 = (movingPt - fixedPts.refTrianglePt1).distance;
     final chord2 = (movingPt - fixedPts.refTrianglePt2).distance;
     final chord3 = (movingPt - fixedPts.refTrianglePt3).distance;

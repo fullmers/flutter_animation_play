@@ -16,33 +16,30 @@ class PtolemysTheorem extends StatefulWidget {
 const period = 5;
 
 class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProviderStateMixin {
-  final _triangleSide = 300.0;
-  final _dotRadius = 10.0;
-
-  late double _radius;
-  late FixedPointsForPtolemy _fixedPoints;
-  late AnimationController _controller;
-
-  bool isPlaying = false;
-
   static final _animation = Tween<double>(
     begin: 0,
     end: period * 1.0,
   );
 
+  late AnimationController _controller;
+  late double _radius;
+  late double _dotRadius;
+  late double _triangleSide;
+  late FixedPointsForPtolemy _fixedPoints;
+
+  bool _isPlaying = false;
+
   @override
   void initState() {
     super.initState();
-    _radius = _triangleSide / sqrt(3);
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: period),
     );
-    //AnimationController is actually an Animation<double> --
-    // it  generates a new value whenever the hardware is ready for a new frame.
 
     _animation.animate(_controller)
       ..addListener(() {
+        // without this , the animation runs but is not visible.
         setState(() {});
       });
   }
@@ -51,26 +48,16 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
   void didChangeDependencies() {
     super.didChangeDependencies();
     // context is not available in initState, so these calcs must be done here
-    final center = Offset(
-      MediaQuery.of(context).size.width / 2 - _radius * .1,
-      MediaQuery.of(context).size.height / 2 - 100,
-    );
-
-    double theta = acos((_triangleSide / 2) / _radius);
-    double h = _radius * cos(pi / 2 - theta);
-    final pt1 = Offset(center.dx - h, center.dy - _triangleSide / 2);
-    final pt2 = Offset(center.dx + _radius, center.dy); //pt to right.
-    final pt3 = Offset(pt1.dx, pt1.dy + _triangleSide); //bottom left
-    final leftFixedDot = Offset(center.dx + _radius * 1.2, center.dy + _radius);
-    final rtFixedDot = Offset(center.dx + _radius * 1.4, center.dy + _radius);
-    _fixedPoints = FixedPointsForPtolemy(
-      center: center,
-      leftFixedPt: leftFixedDot,
-      rtFixedPt: rtFixedDot,
-      refTrianglePt1: pt1,
-      refTrianglePt2: pt2,
-      refTrianglePt3: pt3,
-    );
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    if (width < height) {
+      _radius = width / 3;
+    } else {
+      _radius = height / 3;
+    }
+    _triangleSide = _radius * sqrt(3);
+    _dotRadius = _radius / 20;
+    _fixedPoints = _calculateFixedPoints(width, height);
   }
 
   @override
@@ -88,7 +75,6 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
       body: Container(
         child: CustomPaint(
           foregroundPainter: PtolemyPainter(
-            triangleSide: _triangleSide,
             radius: _radius,
             dotRadius: _dotRadius,
             progress: _controller.value,
@@ -117,7 +103,7 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
               label: 'Play',
               child: ElevatedButton(
                 onPressed: _play,
-                child: isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
+                child: _isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
               ),
             )
           ],
@@ -128,12 +114,12 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
 
   void _play() {
     setState(() {
-      if (isPlaying == false) {
+      if (_isPlaying == false) {
         _controller.repeat();
-        isPlaying = true;
+        _isPlaying = true;
       } else {
         _controller.stop();
-        isPlaying = false;
+        _isPlaying = false;
       }
     });
   }
@@ -142,5 +128,27 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
     setState(() {
       _controller.reset();
     });
+  }
+
+  FixedPointsForPtolemy _calculateFixedPoints(double width, double height) {
+    final center = Offset(
+      width / 2 - _radius * .1,
+      height / 2 - _radius * .1,
+    );
+    double theta = acos((_triangleSide / 2) / _radius);
+    double h = _radius * cos(pi / 2 - theta);
+    final pt1 = Offset(center.dx - h, center.dy - _triangleSide / 2);
+    final pt2 = Offset(center.dx + _radius, center.dy); //pt to right.
+    final pt3 = Offset(pt1.dx, pt1.dy + _triangleSide); //bottom left
+    final leftFixedDot = Offset(center.dx + _radius * 1.2, center.dy + _radius);
+    final rtFixedDot = Offset(center.dx + _radius * 1.4, center.dy + _radius);
+    return FixedPointsForPtolemy(
+      center: center,
+      leftFixedPt: leftFixedDot,
+      rtFixedPt: rtFixedDot,
+      refTrianglePt1: pt1,
+      refTrianglePt2: pt2,
+      refTrianglePt3: pt3,
+    );
   }
 }
