@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 class PtolemysTheorem extends StatefulWidget {
   const PtolemysTheorem({required this.title});
 
+  /// the text to be shown in the app bar
   final String title;
 
   @override

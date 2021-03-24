@@ -5,13 +5,14 @@ import '../animation_controller_buttons.dart';
 import 'fibonacci_painter.dart';
 import 'fibonacci_square.dart';
 
-const double scaleFactor = 3;
-const int sequenceLength = 12;
+/// the length, in seconds, of the spiral animation
 const int durationSeconds = 5;
 
+/// A page that shows an animated fibonacci spiral
 class FibonacciSpiral extends StatefulWidget {
   const FibonacciSpiral({required this.title});
 
+  /// the text to be shown in the app bar
   final String title;
 
   @override
@@ -24,6 +25,7 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
   late AnimationController _controller;
   bool _isPlaying = false;
 
+  /// the animation used to show a fibonacci spiral
   static final spiralPathAnim = Tween<double>(
     begin: 0,
     end: 5,
@@ -55,8 +57,11 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
     _fibSquares.addAll(FibonacciCalcs.buildFibSquares(center));
 
     _spiralPath = Path();
-    for (final fibRect in _fibSquares) {
-      final nextPath = FibonacciCalcs.getSpiralPathFromRect(fibRect.square, fibRect.direction);
+    for (final fibSquare in _fibSquares) {
+      final nextPath = FibonacciCalcs.getSpiralPathFromRect(
+        fibSquare.square,
+        fibSquare.direction,
+      );
       _spiralPath.extendWithPath(nextPath, Offset.zero);
     }
 
@@ -80,7 +85,7 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
           squares: _fibSquares,
           spiralPath: _spiralPath,
           progress: _controller.value,
-          showRects: true,
+          showSquares: true,
         ),
         child: Container(
           color: Colors.pink[100],

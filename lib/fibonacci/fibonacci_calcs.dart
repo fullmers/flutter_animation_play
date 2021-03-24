@@ -1,9 +1,14 @@
 import 'dart:ui';
 
-import 'fibonacci_spiral.dart';
 import 'fibonacci_square.dart';
 
+/// the size of the fibonacci squares are based on this value. The starting squares have a height and width of
+/// [scaleFactor] and all subsequent squares are calculated from this.
+const double scaleFactor = 2.5;
+
+/// A helper class to handle all of the calculations associated with the Fibonacci spiral to be shown
 class FibonacciCalcs {
+  /// create a list of [FibonacciSquare]s, which will subsequently be used to define a spiral path
   static List<FibonacciSquare> buildFibSquares(Offset startCenter) {
     final fibNumbers = _calculateFibNumbers();
     final initRects = _buildInitFibRects(startCenter);
@@ -11,6 +16,7 @@ class FibonacciCalcs {
   }
 
   static List<int> _calculateFibNumbers() {
+    final sequenceLength = 12;
     final fibNumbers = [1, 1];
     for (var i = 0; i < sequenceLength; i++) {
       final nextFib = fibNumbers[fibNumbers.length - 1] + fibNumbers[fibNumbers.length - 2];
@@ -22,7 +28,6 @@ class FibonacciCalcs {
   static List<FibonacciSquare> _buildInitFibRects(Offset startCenter) {
     List<FibonacciSquare> initFibRects = [];
     FibonacciSquare firstRect = FibonacciSquare(
-      fibNumber: 1,
       square: Rect.fromCenter(
         center: startCenter,
         width: scaleFactor,
@@ -31,7 +36,6 @@ class FibonacciCalcs {
       direction: Direction.LEFT,
     );
     FibonacciSquare secondRect = FibonacciSquare(
-      fibNumber: 1,
       square: Rect.fromCenter(
         center: Offset(startCenter.dx, startCenter.dy + scaleFactor),
         width: scaleFactor,
@@ -56,7 +60,7 @@ class FibonacciCalcs {
         lastFibRect: fibRects[i - 1],
       );
       final nextFibRect = FibonacciSquare(
-        fibNumber: newFibNumber,
+        //   fibNumber: newFibNumber,
         direction: FibonacciCalcs._getNextDirection(currentRect.direction),
         square: Rect.fromCenter(
           center: newCenter,
@@ -69,6 +73,7 @@ class FibonacciCalcs {
     return fibRects;
   }
 
+  //todo create button to toggle direction of spiral (currently counter clockwise only)
   static Direction _getNextDirection(Direction currentDir) {
     switch (currentDir) {
       case Direction.BOTTOM:
