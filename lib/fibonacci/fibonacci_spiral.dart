@@ -41,15 +41,26 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
       ..addListener(() {
         setState(() {});
       });
+  }
 
-    final _startCenter = Offset(400, 400);
-    _fibSquares.addAll(FibonacciCalcs.buildFibSquares(_startCenter));
+  @override
+  void didChangeDependencies() {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
+    final center = Offset(
+      width / 2,
+      height / 2,
+    );
+    _fibSquares.clear();
+    _fibSquares.addAll(FibonacciCalcs.buildFibSquares(center));
 
     _spiralPath = Path();
     for (final fibRect in _fibSquares) {
       final nextPath = FibonacciCalcs.getSpiralPathFromRect(fibRect.square, fibRect.direction);
       _spiralPath.extendWithPath(nextPath, Offset.zero);
     }
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -64,20 +75,15 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container(
-        color: Colors.pink[100],
-        child: RotationTransition(
-          turns: _controller,
-          child: CustomPaint(
-            foregroundPainter: FibonacciPainter(
-              squares: _fibSquares,
-              spiralPath: _spiralPath,
-              progress: _controller.value,
-            ),
-            child: Container(
-              color: Colors.pink[100],
-            ),
-          ),
+      body: CustomPaint(
+        foregroundPainter: FibonacciPainter(
+          squares: _fibSquares,
+          spiralPath: _spiralPath,
+          progress: _controller.value,
+          showRects: true,
+        ),
+        child: Container(
+          color: Colors.pink[100],
         ),
       ),
       floatingActionButton: Padding(
