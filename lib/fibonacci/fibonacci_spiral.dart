@@ -5,41 +5,45 @@ import '../animation_controller_buttons.dart';
 import 'fibonacci_painter.dart';
 import 'fibonacci_square.dart';
 
-/// the length, in seconds, of the spiral animation
-const int durationSeconds = 5;
-
 /// A page that shows an animated fibonacci spiral
 class FibonacciSpiral extends StatefulWidget {
-  const FibonacciSpiral({required this.title});
+  const FibonacciSpiral({
+    required this.title,
+    required this.durationInMs,
+  });
 
   /// the text to be shown in the app bar
   final String title;
 
+  /// the duration of the animation (that, is the time it takes to draw the spiral).
+  /// Milliseconds.
+  final int durationInMs;
+
   @override
-  _FibonacciSpiralState createState() => _FibonacciSpiralState();
+  _FibonacciSpiralState createState() => _FibonacciSpiralState(durationInMs: durationInMs);
 }
 
 class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProviderStateMixin {
+  final int durationInMs;
+
   final List<FibonacciSquare> _fibSquares = [];
   late Path _spiralPath;
   late AnimationController _controller;
   bool _isPlaying = false;
 
   /// the animation used to show a fibonacci spiral
-  static final spiralPathAnim = Tween<double>(
-    begin: 0,
-    end: 5,
-  );
+  static final _animation = Tween<double>();
+
+  _FibonacciSpiralState({required this.durationInMs});
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: durationSeconds),
-      reverseDuration: Duration(seconds: durationSeconds),
+      duration: Duration(milliseconds: durationInMs),
     );
-    spiralPathAnim.animate(_controller)
+    _animation.animate(_controller)
       ..addListener(() {
         setState(() {});
       });

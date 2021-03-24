@@ -1,4 +1,4 @@
-import 'package:animaplay/ptolemy/ptolemy.dart';
+import 'package:animaplay/ptolemy/ptolemys_theorem.dart';
 import 'package:flutter/material.dart';
 
 import 'fibonacci/fibonacci_spiral.dart';
@@ -31,7 +31,10 @@ class MyApp extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return FibonacciSpiral(title: 'Fibonacci Spiral');
+                  return FibonacciSpiral(
+                    title: 'Fibonacci Spiral',
+                    durationInMs: 8000,
+                  );
                 },
               ),
             );
@@ -47,7 +50,10 @@ class MyApp extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return PtolemysTheorem(title: 'Ptolemy');
+                  return PtolemysTheorem(
+                    title: 'Ptolemy',
+                    periodInMs: 7500,
+                  );
                 },
               ),
             );

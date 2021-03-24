@@ -5,23 +5,28 @@ import 'package:animaplay/ptolemy/fixed_points_for_ptolemy.dart';
 import 'package:animaplay/ptolemy/ptolemy_painter.dart';
 import 'package:flutter/material.dart';
 
+/// The page which shows an animation illustrating a special case of Ptolemy's theorem
+/// Inspired by: https://myfusimotors.com/2019/01/21/ptolemys-theorem-proof/
 class PtolemysTheorem extends StatefulWidget {
-  const PtolemysTheorem({required this.title});
+  const PtolemysTheorem({
+    required this.title,
+    required this.periodInMs,
+  });
 
   /// the text to be shown in the app bar
   final String title;
 
+  /// the duration of the animation (that, is the time it takes to go around the given circle once).
+  /// Milliseconds.
+  final int periodInMs;
+
   @override
-  _PtolemysTheoremState createState() => _PtolemysTheoremState();
+  _PtolemysTheoremState createState() => _PtolemysTheoremState(periodInMs: periodInMs);
 }
 
-const period = 5;
-
 class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProviderStateMixin {
-  static final _animation = Tween<double>(
-    begin: 0,
-    end: period * 1.0,
-  );
+  final int periodInMs;
+  static final _animation = Tween<double>();
 
   late AnimationController _controller;
   late double _radius;
@@ -31,12 +36,14 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
 
   bool _isPlaying = false;
 
+  _PtolemysTheoremState({required this.periodInMs});
+
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: period),
+      duration: Duration(milliseconds: periodInMs),
     );
 
     _animation.animate(_controller)
@@ -121,9 +128,9 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
     );
     double theta = acos((_triangleSide / 2) / _radius);
     double h = _radius * cos(pi / 2 - theta);
-    final pt1 = Offset(center.dx - h, center.dy - _triangleSide / 2);
-    final pt2 = Offset(center.dx + _radius, center.dy); //pt to right.
-    final pt3 = Offset(pt1.dx, pt1.dy + _triangleSide); //bottom left
+    final pt1 = Offset(center.dx - h, center.dy - _triangleSide / 2); //top left pt
+    final pt2 = Offset(center.dx + _radius, center.dy); //pt to right
+    final pt3 = Offset(pt1.dx, pt1.dy + _triangleSide); //bottom left pt
     final leftFixedDot = Offset(center.dx + _radius * 1.2, center.dy + _radius);
     final rtFixedDot = Offset(center.dx + _radius * 1.4, center.dy + _radius);
     return FixedPointsForPtolemy(
