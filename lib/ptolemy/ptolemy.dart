@@ -88,13 +88,13 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
       ),
       floatingActionButton: AnimationControllerButtons(
         isPlaying: _isPlaying,
-        onPressPlayPause: _play,
+        onPressPlayPause: _playOrPause,
         onPressReset: _reset,
       ),
     );
   }
 
-  void _play() {
+  void _playOrPause() {
     setState(() {
       if (_isPlaying == false) {
         _controller.repeat();
@@ -109,6 +109,7 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
   void _reset() {
     setState(() {
       _controller.reset();
+      _isPlaying = false;
     });
   }
 
