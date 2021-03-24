@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         SizedBox(height: 20),
         ElevatedButton(
           child: Container(
-            child: Text('Spiral'),
+            child: Text('Fibonacci Spiral'),
           ),
           onPressed: () {
             Navigator.push(

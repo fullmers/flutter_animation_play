@@ -26,7 +26,6 @@ class FibonacciPainter extends CustomPainter {
 
     if (showRects) {
       for (FibonacciSquare fibRect in squares) {
-        print(fibRect);
         canvas.drawRect(fibRect.square, paint);
       }
     }
