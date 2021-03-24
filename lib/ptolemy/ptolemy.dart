@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:animaplay/animation_controller_buttons.dart';
 import 'package:animaplay/ptolemy/fixed_points_for_ptolemy.dart';
 import 'package:animaplay/ptolemy/ptolemy_painter.dart';
 import 'package:flutter/material.dart';
@@ -85,29 +86,10 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
           ),
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 30.0),
-        child: Row(
-          children: [
-            Semantics(
-              label: 'Reset',
-              child: ElevatedButton(
-                onPressed: _reset,
-                child: Icon(Icons.replay),
-              ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Semantics(
-              label: 'Play',
-              child: ElevatedButton(
-                onPressed: _play,
-                child: _isPlaying ? Icon(Icons.pause) : Icon(Icons.play_arrow),
-              ),
-            )
-          ],
-        ),
+      floatingActionButton: AnimationControllerButtons(
+        isPlaying: _isPlaying,
+        onPressPlayPause: _play,
+        onPressReset: _reset,
       ),
     );
   }

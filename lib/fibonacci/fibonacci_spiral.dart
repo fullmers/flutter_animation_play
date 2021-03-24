@@ -1,6 +1,7 @@
 import 'package:animaplay/fibonacci/fibonacci_calcs.dart';
 import 'package:flutter/material.dart';
 
+import '../animation_controller_buttons.dart';
 import 'fibonacci_painter.dart';
 import 'fibonacci_square.dart';
 
@@ -21,6 +22,7 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
   final List<FibonacciSquare> _fibSquares = [];
   late Path _spiralPath;
   late AnimationController _controller;
+  bool _isPlaying = false;
 
   static final spiralPathAnim = Tween<double>(
     begin: 0,
@@ -63,9 +65,9 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
         title: Text(widget.title),
       ),
       body: Container(
-        color: Colors.lightBlueAccent,
+        color: Colors.pink[100],
         child: RotationTransition(
-          turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
+          turns: _controller,
           child: CustomPaint(
             foregroundPainter: FibonacciPainter(
               squares: _fibSquares,
@@ -73,79 +75,38 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
               progress: _controller.value,
             ),
             child: Container(
-              color: Colors.lightBlueAccent,
+              color: Colors.pink[100],
             ),
           ),
         ),
       ),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(left: 30.0),
-        child: Row(
-          children: [
-            Semantics(
-              label: 'reset',
-              child: ElevatedButton(
-                onPressed: _reset,
-                child: Icon(Icons.replay),
-              ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Semantics(
-              label: 'Play',
-              child: ElevatedButton(
-                onPressed: _animateSpiral,
-                child: Icon(Icons.play_arrow),
-              ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Semantics(
-              label: 'reverse',
-              child: ElevatedButton(
-                onPressed: _reverse,
-                child: Icon(Icons.fast_rewind_rounded),
-              ),
-            ),
-            const SizedBox(
-              width: 8,
-            ),
-            Semantics(
-              label: 'pause',
-              child: ElevatedButton(
-                onPressed: _pause,
-                child: Icon(Icons.pause),
-              ),
-            ),
-          ],
+        child: AnimationControllerButtons(
+          isPlaying: _isPlaying,
+          onPressPlayPause: _playOrPause,
+          onPressReset: _reset,
         ),
       ),
     );
   }
 
-  void _animateSpiral() {
+  void _playOrPause() {
     setState(() {
-      _controller.repeat();
+      if (_isPlaying == false) {
+        _controller.repeat();
+        _isPlaying = true;
+      } else {
+        _controller.stop();
+        _isPlaying = false;
+      }
     });
   }
 
   void _reset() {
     setState(() {
       _controller.reset();
-    });
-  }
-
-  void _reverse() {
-    setState(() {
-      _controller.reverse();
-    });
-  }
-
-  void _pause() {
-    setState(() {
-      _controller.stop();
+      _isPlaying = false;
     });
   }
 }

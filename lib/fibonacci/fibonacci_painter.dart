@@ -20,9 +20,9 @@ class FibonacciPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint();
-    paint.strokeWidth = 1;
+    paint.strokeWidth = 5;
     paint.style = PaintingStyle.stroke;
-    paint.color = Colors.purple;
+    paint.color = Colors.pink[300]!;
 
     if (showRects) {
       for (FibonacciSquare fibRect in squares) {
