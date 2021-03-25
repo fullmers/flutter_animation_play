@@ -6,10 +6,10 @@ import 'fibonacci_square.dart';
 /// [scaleFactor] and all subsequent squares are calculated from this.
 const double scaleFactor = 2.5;
 
-/// A helper class to handle all of the calculations associated with the Fibonacci spiral to be shown
+/// A utility class to handle all of the calculations associated with the Fibonacci spiral to be shown
 class FibonacciCalcs {
   /// create a list of [FibonacciSquare]s, which will subsequently be used to define a spiral path
-  static List<FibonacciSquare> buildFibSquares(Offset startCenter) {
+  List<FibonacciSquare> buildFibSquares(Offset startCenter) {
     final fibNumbers = _calculateFibNumbers();
     final initRects = _buildInitFibRects(startCenter);
     return _buildFibRectSequence(fibNumbers, initRects);
@@ -25,7 +25,7 @@ class FibonacciCalcs {
     return fibNumbers;
   }
 
-  static List<FibonacciSquare> _buildInitFibRects(Offset startCenter) {
+  List<FibonacciSquare> _buildInitFibRects(Offset startCenter) {
     List<FibonacciSquare> initFibRects = [];
     FibonacciSquare firstRect = FibonacciSquare(
       square: Rect.fromCenter(
@@ -48,20 +48,20 @@ class FibonacciCalcs {
     return initFibRects;
   }
 
-  static List<FibonacciSquare> _buildFibRectSequence(List<int> fibSequence, List<FibonacciSquare> initFibRects) {
+  List<FibonacciSquare> _buildFibRectSequence(List<int> fibSequence, List<FibonacciSquare> initFibRects) {
     List<FibonacciSquare> fibRects = initFibRects;
     for (var i = 2; i < fibSequence.length; i++) {
       final currentRect = fibRects[i - 1];
       final newFibNumber = fibSequence[i];
       final newLength = newFibNumber * scaleFactor;
-      final newCenter = FibonacciCalcs._nextCenter(
+      final newCenter = _nextCenter(
         lastFibNum: fibSequence[i - 1],
         lastLastFibNum: fibSequence[i - 2],
         lastFibRect: fibRects[i - 1],
       );
       final nextFibRect = FibonacciSquare(
         //   fibNumber: newFibNumber,
-        direction: FibonacciCalcs._getNextDirection(currentRect.direction),
+        direction: _getNextDirection(currentRect.direction),
         square: Rect.fromCenter(
           center: newCenter,
           width: newLength,
@@ -74,7 +74,7 @@ class FibonacciCalcs {
   }
 
   //todo create button to toggle direction of spiral (currently counter clockwise only)
-  static Direction _getNextDirection(Direction currentDir) {
+  Direction _getNextDirection(Direction currentDir) {
     switch (currentDir) {
       case Direction.BOTTOM:
         return Direction.RIGHT;
@@ -87,7 +87,7 @@ class FibonacciCalcs {
     }
   }
 
-  static Offset _nextCenter({
+  Offset _nextCenter({
     required int lastFibNum,
     required int lastLastFibNum,
     required FibonacciSquare lastFibRect,
@@ -120,7 +120,7 @@ class FibonacciCalcs {
     return Offset(dxOffset, dyOffset);
   }
 
-  static Path getSpiralPathFromRect(Rect rect, Direction direction) {
+  Path getSpiralPathFromRect(Rect rect, Direction direction) {
     double p1dx;
     double p1dy;
     double p2dx;

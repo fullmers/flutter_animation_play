@@ -27,11 +27,12 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
   final int durationInMs;
 
   final List<FibonacciSquare> _fibSquares = [];
+  final _fibCalcs = FibonacciCalcs();
   late Path _spiralPath;
   late AnimationController _controller;
   bool _isPlaying = false;
 
-  /// the animation used to show a fibonacci spiral
+  // beginning and end fields of Tween not needed, since the duration field in the controller provides this
   static final _animation = Tween<double>();
 
   _FibonacciSpiralState({required this.durationInMs});
@@ -58,11 +59,11 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
       height / 2,
     );
     _fibSquares.clear();
-    _fibSquares.addAll(FibonacciCalcs.buildFibSquares(center));
+    _fibSquares.addAll(_fibCalcs.buildFibSquares(center));
 
     _spiralPath = Path();
     for (final fibSquare in _fibSquares) {
-      final nextPath = FibonacciCalcs.getSpiralPathFromRect(
+      final nextPath = _fibCalcs.getSpiralPathFromRect(
         fibSquare.square,
         fibSquare.direction,
       );
