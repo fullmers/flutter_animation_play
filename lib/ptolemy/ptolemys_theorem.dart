@@ -10,22 +10,20 @@ import 'package:flutter/material.dart';
 class PtolemysTheorem extends StatefulWidget {
   const PtolemysTheorem({
     required this.title,
-    required this.periodInMs,
   });
 
   /// the text to be shown in the app bar
   final String title;
 
-  /// the duration of the animation (that, is the time it takes to go around the given circle once).
-  /// Milliseconds.
-  final int periodInMs;
-
   @override
-  _PtolemysTheoremState createState() => _PtolemysTheoremState(periodInMs: periodInMs);
+  _PtolemysTheoremState createState() => _PtolemysTheoremState();
 }
 
 class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProviderStateMixin {
-  final int periodInMs;
+  /// the duration of the animation (that, is the time it takes to go around the given circle once).
+  /// Milliseconds.
+  final int _periodInMs = 7500;
+
   static final _animation = Tween<double>();
 
   late AnimationController _controller;
@@ -36,14 +34,14 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
 
   bool _isPlaying = false;
 
-  _PtolemysTheoremState({required this.periodInMs});
+  _PtolemysTheoremState();
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: periodInMs),
+      duration: Duration(milliseconds: _periodInMs),
     );
 
     _animation.animate(_controller)

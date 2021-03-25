@@ -2,6 +2,7 @@ import 'package:animaplay/ptolemy/ptolemys_theorem.dart';
 import 'package:flutter/material.dart';
 
 import 'fibonacci/fibonacci_spiral.dart';
+import 'flowers/flowers.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -33,7 +34,6 @@ class MyApp extends StatelessWidget {
                 builder: (context) {
                   return FibonacciSpiral(
                     title: 'Fibonacci Spiral',
-                    durationInMs: 8000,
                   );
                 },
               ),
@@ -52,7 +52,24 @@ class MyApp extends StatelessWidget {
                 builder: (context) {
                   return PtolemysTheorem(
                     title: 'Ptolemy',
-                    periodInMs: 7500,
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
+            child: Text('Flowers'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return Flowers(
+                    title: 'Flowers',
                   );
                 },
               ),

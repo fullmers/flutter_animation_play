@@ -9,22 +9,19 @@ import 'fibonacci_square.dart';
 class FibonacciSpiral extends StatefulWidget {
   const FibonacciSpiral({
     required this.title,
-    required this.durationInMs,
   });
 
   /// the text to be shown in the app bar
   final String title;
 
-  /// the duration of the animation (that, is the time it takes to draw the spiral).
-  /// Milliseconds.
-  final int durationInMs;
-
   @override
-  _FibonacciSpiralState createState() => _FibonacciSpiralState(durationInMs: durationInMs);
+  _FibonacciSpiralState createState() => _FibonacciSpiralState();
 }
 
 class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProviderStateMixin {
-  final int durationInMs;
+  /// the duration of the animation (that, is the time it takes to draw the spiral).
+  /// Milliseconds.
+  final int _durationInMs = 8000;
 
   final List<FibonacciSquare> _fibSquares = [];
   final _fibCalcs = FibonacciCalcs();
@@ -35,14 +32,12 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
   // beginning and end fields of Tween not needed, since the duration field in the controller provides this
   static final _animation = Tween<double>();
 
-  _FibonacciSpiralState({required this.durationInMs});
-
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: durationInMs),
+      duration: Duration(milliseconds: _durationInMs),
     );
     _animation.animate(_controller)
       ..addListener(() {
