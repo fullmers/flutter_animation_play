@@ -20,6 +20,8 @@ const double scaleFactor = 3;
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Column(
       children: [
         SizedBox(height: 20),
@@ -70,6 +72,8 @@ class MyApp extends StatelessWidget {
                 builder: (context) {
                   return Flowers(
                     title: 'Flowers',
+                    width: width,
+                    height: height,
                   );
                 },
               ),

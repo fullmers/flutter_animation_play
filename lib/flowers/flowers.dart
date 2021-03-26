@@ -9,10 +9,15 @@ import 'flower_painter.dart';
 class Flowers extends StatefulWidget {
   const Flowers({
     required this.title,
+    required this.width,
+    required this.height,
   });
 
   /// the text to be shown in the app bar
   final String title;
+
+  final double width;
+  final double height;
 
   @override
   _FlowersState createState() => _FlowersState();
@@ -24,9 +29,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   bool _isPlaying = false;
   final _random = Random();
-  final List<Offset> _largeFlowerCenters = [];
-  final List<Offset> _mediumFlowerCenters = [];
-  final List<Offset> _smallFlowerCenters = [];
+  final List<Flower> _flowers = [];
 
   // beginning and end fields of Tween not needed, since the duration field in the controller provides this
   static final _animation = Tween<double>();
@@ -42,19 +45,39 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
       ..addListener(() {
         setState(() {});
       });
+
+    for (var flowerType in FlowerTypes.values) {
+      _createFlowers(
+        numFlowers: _getNumFlowers(flowerType),
+        flowerType: flowerType,
+      );
+    }
   }
 
-  @override
-  void didChangeDependencies() {
-    print('calling didChangeDependencies');
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+  int _getNumFlowers(FlowerTypes flowerType) {
+    switch (flowerType) {
+      case FlowerTypes.BigSakura:
+        return 10;
+      case FlowerTypes.MediumSakura:
+        return 30;
+      case FlowerTypes.SmallSakura:
+        return 40;
+    }
+  }
 
-    final baseNumFlowers = 10;
-    _largeFlowerCenters.addAll(_makeRandomCenters(width: width, height: height, numCenters: baseNumFlowers));
-    _mediumFlowerCenters.addAll(_makeRandomCenters(width: width, height: height, numCenters: baseNumFlowers * 2));
-    _smallFlowerCenters.addAll(_makeRandomCenters(width: width, height: height, numCenters: baseNumFlowers * 10));
-    super.didChangeDependencies();
+  void _createFlowers({
+    required int numFlowers,
+    required FlowerTypes flowerType,
+  }) {
+    for (int i = 0; i < numFlowers; i++) {
+      Flower flower = Flower(
+        flowerType: flowerType,
+        center: _makeRandomCenter(),
+        vx: _random.nextDouble(),
+        vy: _random.nextDouble(),
+      );
+      _flowers.add(flower);
+    }
   }
 
   @override
@@ -65,23 +88,17 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print('calling build');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: CustomPaint(
         foregroundPainter: FlowerPainter(
-          numPetals: 5,
           progress: _controller.value,
-          largeFlowerCenters: _largeFlowerCenters,
-          mediumFlowerCenters: _mediumFlowerCenters,
-          smallFlowerCenters: _smallFlowerCenters,
-          referenceR: 10.0,
-          referenceCtrlHeight: 100,
+          flowers: _flowers,
         ),
         child: Container(
-          color: Colors.pink[100],
+          color: Colors.yellow[50],
         ),
       ),
       floatingActionButton: Padding(
@@ -95,18 +112,10 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
     );
   }
 
-  List<Offset> _makeRandomCenters({
-    required double width,
-    required double height,
-    required int numCenters,
-  }) {
-    final List<Offset> centers = [];
-    for (int i = 0; i < numCenters; i++) {
-      double dx = _random.nextDouble() * width;
-      double dy = _random.nextDouble() * height;
-      centers.add(Offset(dx, dy));
-    }
-    return centers;
+  Offset _makeRandomCenter() {
+    double dx = _random.nextDouble() * widget.width;
+    double dy = _random.nextDouble() * widget.height;
+    return Offset(dx, dy);
   }
 
   void _playOrPause() {
