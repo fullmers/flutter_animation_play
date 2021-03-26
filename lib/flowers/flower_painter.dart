@@ -3,6 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import 'flower.dart';
+
 /// [FlowerPainter] animates some flowers
 class FlowerPainter extends CustomPainter {
   FlowerPainter({
@@ -17,8 +19,6 @@ class FlowerPainter extends CustomPainter {
 
   final _paint = Paint();
   Path petalsPath = Path();
-
-  //double _theta = 0;
 
   // it appears that paint is called in desktop every time the mouse moves over a new widget, or in and out of the
   // program screen
@@ -37,7 +37,7 @@ class FlowerPainter extends CustomPainter {
       if (colorIndex == 0) {
         colorIndex = 100;
       }
-      Color color = Colors.deepOrange[colorIndex]!;
+      Color color = flowers[i].color;
 
       _drawFlower(
         canvas: canvas,
@@ -105,7 +105,7 @@ class FlowerPainter extends CustomPainter {
     canvas.drawCircle(flower.center, flower.innerRadius, _paint);
     canvas.drawPath(petalsPath, _paint);
 
-    _paint.color = Colors.deepOrange[100]!;
+    _paint.color = flower.flowerStrokeColor; //Colors.deepOrange[100]!;
     _paint.style = PaintingStyle.stroke;
     _paint.strokeWidth = 1.5;
     _paint.strokeCap = StrokeCap.round;
@@ -113,7 +113,7 @@ class FlowerPainter extends CustomPainter {
   }
 
   void _drawInsides({required Canvas canvas, required Flower flower, required double theta}) {
-    _paint.color = Colors.deepOrange[50]!;
+    _paint.color = flower.flowerStrokeColor;
     _paint.style = PaintingStyle.stroke;
     _paint.strokeWidth = 2;
     _paint.strokeCap = StrokeCap.round;
@@ -135,83 +135,3 @@ class FlowerPainter extends CustomPainter {
     return false;
   }
 }
-
-class Flower {
-  final double vx;
-  final double vy;
-  final Offset center;
-  final FlowerTypes flowerType;
-  // final FlowerColorScheme colorScheme;
-
-  double get innerWidthSweep => 2 * pi / numPetals;
-
-  double get outerWidthDelta => pi / (numPetals * 8);
-
-  double get innerRadius {
-    switch (flowerType) {
-      case FlowerTypes.BigSakura:
-        return 12;
-      case FlowerTypes.MediumSakura:
-        return 8;
-      case FlowerTypes.SmallSakura:
-        return 4;
-    }
-  }
-
-  /* Color get color {
-    switch (colorScheme) {
-      case FlowerColorScheme.Orange:
-        switch (flowerType) {
-          case FlowerTypes.BigSakura:
-            return Colors.orange[100];
-          case FlowerTypes.MediumSakura:
-            return 80;
-          case FlowerTypes.SmallSakura:
-            return 50;
-        }
-      case FlowerColorScheme.Blue:
-        // TODO: Handle this case.
-        break;
-      case FlowerColorScheme.Green:
-        // TODO: Handle this case.
-        break;
-      case FlowerColorScheme.Pink:
-        // TODO: Handle this case.
-        break;
-      case FlowerColorScheme.Purple:
-        // TODO: Handle this case.
-        break;
-    }
-  }*/
-
-  double get ctrlPtHeight {
-    switch (flowerType) {
-      case FlowerTypes.BigSakura:
-        return 100;
-      case FlowerTypes.MediumSakura:
-        return 80;
-      case FlowerTypes.SmallSakura:
-        return 50;
-    }
-  }
-
-  //todo update this when you have more types
-  int get numPetals {
-    return 5;
-  }
-
-  const Flower({
-    required this.center,
-    required this.vx,
-    required this.vy,
-    required this.flowerType,
-  });
-}
-
-enum FlowerTypes {
-  SmallSakura,
-  MediumSakura,
-  BigSakura,
-}
-
-enum FlowerColorScheme { Orange, Blue, Green, Pink, Purple }

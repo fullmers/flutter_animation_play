@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../animation_controller_buttons.dart';
+import 'flower.dart';
 import 'flower_painter.dart';
 
 /// A page that shows some animated flowers
@@ -75,6 +76,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
         center: _makeRandomCenter(),
         vx: _random.nextDouble(),
         vy: _random.nextDouble(),
+        flowerColorScheme: FlowerColorScheme.Blue,
       );
       _flowers.add(flower);
     }
