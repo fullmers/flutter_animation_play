@@ -17,10 +17,13 @@ class Flowers extends StatefulWidget {
 }
 
 class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
-  final int durationInMs = 10000;
+  final int durationInMs = 1000;
 
   late AnimationController _controller;
   bool _isPlaying = false;
+  Offset _center = Offset.zero;
+  double _width = 0;
+  double _height = 0;
 
   // beginning and end fields of Tween not needed, since the duration field in the controller provides this
   static final _animation = Tween<double>();
@@ -40,11 +43,12 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   @override
   void didChangeDependencies() {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-    final center = Offset(
-      width / 2,
-      height / 2,
+    print('calling didChangeDependencies');
+    _width = MediaQuery.of(context).size.width;
+    _height = MediaQuery.of(context).size.height;
+    _center = Offset(
+      _width / 2,
+      _height / 2,
     );
 
     super.didChangeDependencies();
@@ -58,13 +62,18 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    print('calling build');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: CustomPaint(
         foregroundPainter: FlowerPainter(
+          numPetals: 5,
           progress: _controller.value,
+          center: _center,
+          width: _width,
+          height: _height,
         ),
         child: Container(
           color: Colors.pink[100],
