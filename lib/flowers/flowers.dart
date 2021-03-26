@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../animation_controller_buttons.dart';
@@ -21,9 +23,10 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   late AnimationController _controller;
   bool _isPlaying = false;
-  Offset _center = Offset.zero;
-  double _width = 0;
-  double _height = 0;
+  final _random = Random();
+  final List<Offset> _largeFlowerCenters = [];
+  final List<Offset> _mediumFlowerCenters = [];
+  final List<Offset> _smallFlowerCenters = [];
 
   // beginning and end fields of Tween not needed, since the duration field in the controller provides this
   static final _animation = Tween<double>();
@@ -44,13 +47,13 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   @override
   void didChangeDependencies() {
     print('calling didChangeDependencies');
-    _width = MediaQuery.of(context).size.width;
-    _height = MediaQuery.of(context).size.height;
-    _center = Offset(
-      _width / 2,
-      _height / 2,
-    );
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
 
+    final baseNumFlowers = 10;
+    _largeFlowerCenters.addAll(_makeRandomCenters(width: width, height: height, numCenters: baseNumFlowers));
+    _mediumFlowerCenters.addAll(_makeRandomCenters(width: width, height: height, numCenters: baseNumFlowers * 2));
+    _smallFlowerCenters.addAll(_makeRandomCenters(width: width, height: height, numCenters: baseNumFlowers * 10));
     super.didChangeDependencies();
   }
 
@@ -71,9 +74,11 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
         foregroundPainter: FlowerPainter(
           numPetals: 5,
           progress: _controller.value,
-          center: _center,
-          width: _width,
-          height: _height,
+          largeFlowerCenters: _largeFlowerCenters,
+          mediumFlowerCenters: _mediumFlowerCenters,
+          smallFlowerCenters: _smallFlowerCenters,
+          referenceR: 10.0,
+          referenceCtrlHeight: 100,
         ),
         child: Container(
           color: Colors.pink[100],
@@ -88,6 +93,20 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  List<Offset> _makeRandomCenters({
+    required double width,
+    required double height,
+    required int numCenters,
+  }) {
+    final List<Offset> centers = [];
+    for (int i = 0; i < numCenters; i++) {
+      double dx = _random.nextDouble() * width;
+      double dy = _random.nextDouble() * height;
+      centers.add(Offset(dx, dy));
+    }
+    return centers;
   }
 
   void _playOrPause() {
