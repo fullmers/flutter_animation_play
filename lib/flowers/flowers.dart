@@ -29,8 +29,11 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   late AnimationController _controller;
   bool _isPlaying = false;
+  FlowerColorScheme _currentColorScheme = FlowerColorScheme.Green;
   final _random = Random();
   final List<Flower> _flowers = [];
+  final List<Offset> _centers = [];
+  final int _numFlowers = 50;
 
   // beginning and end fields of Tween not needed, since the duration field in the controller provides this
   static final _animation = Tween<double>();
@@ -47,38 +50,52 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
         setState(() {});
       });
 
-    for (var flowerType in FlowerTypes.values) {
-      _createFlowers(
-        numFlowers: _getNumFlowers(flowerType),
-        flowerType: flowerType,
+    _createCenters();
+    _createFlowers(
+        //  flowerColorScheme: FlowerColorScheme.Green,
+        );
+  }
+
+  void _createFlowers() {
+    _flowers.clear();
+    final int numSmallFlowers = _getNumFlowers(FlowerTypes.SmallSakura);
+    FlowerTypes type;
+    for (int i = 0; i < _centers.length; i++) {
+      if (i < numSmallFlowers) {
+        type = FlowerTypes.SmallSakura;
+      } else if (i >= numSmallFlowers && i < (numSmallFlowers + _getNumFlowers(FlowerTypes.MediumSakura))) {
+        type = FlowerTypes.MediumSakura;
+      } else {
+        type = FlowerTypes.BigSakura;
+      }
+      Flower flower = Flower(
+        flowerType: type,
+        center: _centers[i],
+        vx: _random.nextDouble(),
+        vy: _random.nextDouble(),
+        flowerColorScheme: _currentColorScheme,
       );
+      _flowers.add(flower);
+    }
+  }
+
+  void _createCenters() {
+    for (int i = 0; i < _numFlowers; i++) {
+      _centers.add(_makeRandomCenter());
     }
   }
 
   int _getNumFlowers(FlowerTypes flowerType) {
+    final int numBigFlowers = (_numFlowers / 6).floor();
+    final int numMediumFlowers = numBigFlowers * 2;
+    final int numSmallFlowers = _numFlowers - numMediumFlowers - numBigFlowers;
     switch (flowerType) {
       case FlowerTypes.BigSakura:
-        return 10;
+        return numBigFlowers;
       case FlowerTypes.MediumSakura:
-        return 30;
+        return numMediumFlowers;
       case FlowerTypes.SmallSakura:
-        return 40;
-    }
-  }
-
-  void _createFlowers({
-    required int numFlowers,
-    required FlowerTypes flowerType,
-  }) {
-    for (int i = 0; i < numFlowers; i++) {
-      Flower flower = Flower(
-        flowerType: flowerType,
-        center: _makeRandomCenter(),
-        vx: _random.nextDouble(),
-        vy: _random.nextDouble(),
-        flowerColorScheme: FlowerColorScheme.Blue,
-      );
-      _flowers.add(flower);
+        return numSmallFlowers;
     }
   }
 
@@ -103,15 +120,51 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
           color: Colors.yellow[50],
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 30.0),
-        child: AnimationControllerButtons(
-          isPlaying: _isPlaying,
-          onPressPlayPause: _playOrPause,
-          onPressReset: _reset,
-        ),
+      floatingActionButton: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 30.0),
+            child: AnimationControllerButtons(
+              isPlaying: _isPlaying,
+              onPressPlayPause: _playOrPause,
+              onPressReset: _reset,
+            ),
+          ),
+          const SizedBox(width: 8),
+          _makeColorChangeButton(FlowerColorScheme.Green, Colors.green),
+          const SizedBox(width: 8),
+          _makeColorChangeButton(FlowerColorScheme.Pink, Colors.pink),
+          const SizedBox(width: 8),
+          _makeColorChangeButton(FlowerColorScheme.Blue, Colors.blue),
+          const SizedBox(width: 8),
+          _makeColorChangeButton(FlowerColorScheme.Orange, Colors.orange),
+          const SizedBox(width: 8),
+          _makeColorChangeButton(FlowerColorScheme.Purple, Colors.purple),
+        ],
       ),
     );
+  }
+
+  Widget _makeColorChangeButton(FlowerColorScheme scheme, Color color) {
+    return InkWell(
+      child: Container(
+          height: 30,
+          width: 30,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            color: color,
+          )),
+      onTap: () => _changeColor(scheme),
+    );
+  }
+
+  void _changeColor(FlowerColorScheme flowerColorScheme) {
+    setState(() {
+      _currentColorScheme = flowerColorScheme;
+      _createFlowers(
+          // flowerColorScheme: flowerColorScheme,
+          );
+    });
   }
 
   Offset _makeRandomCenter() {
@@ -134,8 +187,9 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   void _reset() {
     setState(() {
-      _controller.reset();
-      _isPlaying = false;
+      _centers.clear();
+      _createCenters();
+      _createFlowers();
     });
   }
 }

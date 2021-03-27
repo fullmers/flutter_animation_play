@@ -25,18 +25,29 @@ class Flower {
     }
   }
 
+  double get ctrlPtHeight {
+    switch (flowerType) {
+      case FlowerTypes.BigSakura:
+        return 100;
+      case FlowerTypes.MediumSakura:
+        return 80;
+      case FlowerTypes.SmallSakura:
+        return 50;
+    }
+  }
+
   Color get flowerStrokeColor {
     switch (flowerColorScheme) {
       case FlowerColorScheme.Orange:
-        return Colors.orange[50]!;
+        return Colors.orange[100]!;
       case FlowerColorScheme.Blue:
-        return Colors.lightBlue[50]!;
+        return Colors.lightBlue[100]!;
       case FlowerColorScheme.Green:
-        return Colors.green[50]!;
+        return Colors.green[100]!;
       case FlowerColorScheme.Pink:
-        return Colors.pink[50]!;
+        return Colors.pink[100]!;
       case FlowerColorScheme.Purple:
-        return Colors.deepPurple[50]!;
+        return Colors.deepPurple[100]!;
     }
   }
 
@@ -90,17 +101,6 @@ class Flower {
           case FlowerTypes.SmallSakura:
             return Colors.deepPurple[smallColorIndex]!;
         }
-    }
-  }
-
-  double get ctrlPtHeight {
-    switch (flowerType) {
-      case FlowerTypes.BigSakura:
-        return 100;
-      case FlowerTypes.MediumSakura:
-        return 80;
-      case FlowerTypes.SmallSakura:
-        return 50;
     }
   }
 
