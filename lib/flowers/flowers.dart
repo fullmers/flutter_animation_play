@@ -25,7 +25,7 @@ class Flowers extends StatefulWidget {
 }
 
 class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
-  final int durationInMs = 1000;
+  final int durationInMs = 7000;
 
   late AnimationController _controller;
   bool _isPlaying = false;
@@ -33,7 +33,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   final _random = Random();
   final List<Flower> _flowers = [];
   final List<Offset> _centers = [];
-  final int _numFlowers = 50;
+  final int _numFlowers = 6;
 
   // beginning and end fields of Tween not needed, since the duration field in the controller provides this
   static final _animation = Tween<double>();
@@ -51,9 +51,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
       });
 
     _createCenters();
-    _createFlowers(
-        //  flowerColorScheme: FlowerColorScheme.Green,
-        );
+    _createFlowers();
   }
 
   void _createFlowers() {
@@ -71,11 +69,19 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
       Flower flower = Flower(
         flowerType: type,
         center: _centers[i],
-        vx: _random.nextDouble(),
-        vy: _random.nextDouble(),
+        vx: _random.nextDouble() * _flipCoin(),
+        vy: _random.nextDouble() * _flipCoin(),
         flowerColorScheme: _currentColorScheme,
       );
       _flowers.add(flower);
+    }
+  }
+
+  int _flipCoin() {
+    if (_random.nextBool()) {
+      return 1;
+    } else {
+      return -1;
     }
   }
 
@@ -107,6 +113,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    //  print('controller value: ${_controller.value}');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -140,6 +147,8 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
           _makeColorChangeButton(FlowerColorScheme.Orange, Colors.orange),
           const SizedBox(width: 8),
           _makeColorChangeButton(FlowerColorScheme.Purple, Colors.purple),
+          const SizedBox(width: 8),
+          _makeColorChangeButton(FlowerColorScheme.Yellow, Colors.yellow),
         ],
       ),
     );
@@ -159,11 +168,19 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   }
 
   void _changeColor(FlowerColorScheme flowerColorScheme) {
+    double oldProgress = _controller.value;
     setState(() {
-      _currentColorScheme = flowerColorScheme;
-      _createFlowers(
-          // flowerColorScheme: flowerColorScheme,
-          );
+      if (_isPlaying) {
+        _controller.stop();
+        _currentColorScheme = flowerColorScheme;
+        _createFlowers();
+        _controller.repeat();
+      } else {
+        _currentColorScheme = flowerColorScheme;
+        _createFlowers();
+        //_controller.repeat();
+      }
+      //_controller.value = oldProgress;
     });
   }
 

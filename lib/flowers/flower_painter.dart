@@ -33,15 +33,8 @@ class FlowerPainter extends CustomPainter {
     required List<Flower> flowers,
   }) {
     for (int i = 0; i < flowers.length; i++) {
-      int colorIndex = (i % 9) * 100;
-      if (colorIndex == 0) {
-        colorIndex = 100;
-      }
-      Color color = flowers[i].color;
-
       _drawFlower(
         canvas: canvas,
-        color: color,
         flower: flowers[i],
       );
     }
@@ -49,19 +42,26 @@ class FlowerPainter extends CustomPainter {
 
   void _drawFlower({
     required Canvas canvas,
-    required Color color,
     required Flower flower,
   }) {
     petalsPath.reset();
+    final travelDistance = 500;
+    double speedFactor = 1;
+    if (flower.flowerType == FlowerTypes.SmallSakura) {
+      speedFactor = 1.2;
+    } else if (flower.flowerType == FlowerTypes.BigSakura) {
+      speedFactor = .6;
+    }
+    final newDx = flower.center.dx + progress * flower.vx * travelDistance * speedFactor;
+    final newDy = flower.center.dy + progress * flower.vy * travelDistance * speedFactor;
+    final newFlower = flower.copyWith(center: Offset(newDx, newDy));
 
-    _paint.color = color;
     double theta = 0;
     for (int i = 0; i < flower.numPetals; i++) {
       theta = theta + 2 * pi / flower.numPetals;
       _drawPetal(
         canvas: canvas,
-        color: color,
-        flower: flower,
+        flower: newFlower,
         theta: theta,
       );
     }
@@ -71,7 +71,7 @@ class FlowerPainter extends CustomPainter {
       theta = theta + 2 * pi / flower.numPetals;
       _drawInsides(
         canvas: canvas,
-        flower: flower,
+        flower: newFlower,
         theta: theta,
       );
     }
@@ -79,11 +79,10 @@ class FlowerPainter extends CustomPainter {
 
   void _drawPetal({
     required Canvas canvas,
-    required Color color,
     required Flower flower,
     required double theta,
   }) {
-    _paint.color = color;
+    _paint.color = flower.color;
     Offset startPoint = flower.center + Offset(flower.innerRadius * cos(theta), flower.innerRadius * sin(theta));
 
     Offset endPt = flower.center +
@@ -105,7 +104,7 @@ class FlowerPainter extends CustomPainter {
     canvas.drawCircle(flower.center, flower.innerRadius, _paint);
     canvas.drawPath(petalsPath, _paint);
 
-    _paint.color = flower.flowerStrokeColor; //Colors.deepOrange[100]!;
+    _paint.color = flower.flowerStrokeColor;
     _paint.style = PaintingStyle.stroke;
     _paint.strokeWidth = 1.5;
     _paint.strokeCap = StrokeCap.round;
@@ -125,13 +124,14 @@ class FlowerPainter extends CustomPainter {
             (flower.innerRadius + midLineLength / 2) * sin(midTheta));
     final innerLftPt = flower.center + Offset(flower.innerRadius * cos(theta), flower.innerRadius * sin(theta));
     final outerLftPt = flower.center +
-        Offset((flower.innerRadius + midLineLength) * cos(theta), (flower.innerRadius + midLineLength) * sin(theta));
+        Offset((flower.innerRadius + midLineLength * .8) * cos(theta),
+            (flower.innerRadius + midLineLength * .8) * sin(theta));
     canvas.drawLine(innerMidPt, outerMidPt, _paint);
     canvas.drawLine(innerLftPt, outerLftPt, _paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+    return true;
   }
 }

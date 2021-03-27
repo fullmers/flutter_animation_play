@@ -10,6 +10,22 @@ class Flower {
   final FlowerTypes flowerType;
   final FlowerColorScheme flowerColorScheme;
 
+  Flower copyWith({
+    double? vx,
+    double? vy,
+    Offset? center,
+    FlowerTypes? flowerType,
+    FlowerColorScheme? flowerColorScheme,
+  }) {
+    return (Flower(
+      center: center ?? this.center,
+      vy: vy ?? this.vy,
+      vx: vx ?? this.vx,
+      flowerType: flowerType ?? this.flowerType,
+      flowerColorScheme: flowerColorScheme ?? this.flowerColorScheme,
+    ));
+  }
+
   double get innerWidthSweep => 2 * pi / numPetals;
 
   double get outerWidthDelta => pi / (numPetals * 8);
@@ -48,6 +64,8 @@ class Flower {
         return Colors.pink[100]!;
       case FlowerColorScheme.Purple:
         return Colors.deepPurple[100]!;
+      case FlowerColorScheme.Yellow:
+        return Colors.yellow[200]!;
     }
   }
 
@@ -101,6 +119,15 @@ class Flower {
           case FlowerTypes.SmallSakura:
             return Colors.deepPurple[smallColorIndex]!;
         }
+      case FlowerColorScheme.Yellow:
+        switch (flowerType) {
+          case FlowerTypes.BigSakura:
+            return Colors.yellow[300]!;
+          case FlowerTypes.MediumSakura:
+            return Colors.yellow[400]!;
+          case FlowerTypes.SmallSakura:
+            return Colors.yellow[600]!;
+        }
     }
   }
 
@@ -124,4 +151,4 @@ enum FlowerTypes {
   BigSakura,
 }
 
-enum FlowerColorScheme { Orange, Blue, Green, Pink, Purple }
+enum FlowerColorScheme { Orange, Blue, Green, Pink, Purple, Yellow }
