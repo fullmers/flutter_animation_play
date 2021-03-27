@@ -17,23 +17,34 @@ class Flowers extends StatefulWidget {
   /// the text to be shown in the app bar
   final String title;
 
+  /// current device screen width, in pixels
   final double width;
+
+  /// current device screen height, in pixels
   final double height;
 
   @override
   _FlowersState createState() => _FlowersState();
 }
 
+enum MyControllerState {
+  Forward,
+  Pause,
+  Backward,
+}
+
 class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   final int durationInMs = 7000;
+  MyControllerState controllerState = MyControllerState.Pause;
 
   late AnimationController _controller;
   bool _isPlaying = false;
   FlowerColorScheme _currentColorScheme = FlowerColorScheme.Green;
   final _random = Random();
   final List<Flower> _flowers = [];
-  final List<Offset> _centers = [];
-  final int _numFlowers = 6;
+  final List<FlowerSeed> _seeds = [];
+  final int _numFlowers = 30;
+  int _numPetals = 5;
 
   // beginning and end fields of Tween not needed, since the duration field in the controller provides this
   static final _animation = Tween<double>();
@@ -50,7 +61,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
         setState(() {});
       });
 
-    _createCenters();
+    _createSeeds();
     _createFlowers();
   }
 
@@ -58,7 +69,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
     _flowers.clear();
     final int numSmallFlowers = _getNumFlowers(FlowerTypes.SmallSakura);
     FlowerTypes type;
-    for (int i = 0; i < _centers.length; i++) {
+    for (int i = 0; i < _seeds.length; i++) {
       if (i < numSmallFlowers) {
         type = FlowerTypes.SmallSakura;
       } else if (i >= numSmallFlowers && i < (numSmallFlowers + _getNumFlowers(FlowerTypes.MediumSakura))) {
@@ -68,10 +79,9 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
       }
       Flower flower = Flower(
         flowerType: type,
-        center: _centers[i],
-        vx: _random.nextDouble() * _flipCoin(),
-        vy: _random.nextDouble() * _flipCoin(),
+        seed: _seeds[i],
         flowerColorScheme: _currentColorScheme,
+        numPetals: _numPetals,
       );
       _flowers.add(flower);
     }
@@ -85,9 +95,16 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
     }
   }
 
-  void _createCenters() {
+  void _createSeeds() {
     for (int i = 0; i < _numFlowers; i++) {
-      _centers.add(_makeRandomCenter());
+      final center = _makeRandomCenter();
+      final mX = _random.nextDouble() * _flipCoin();
+      final mY = _random.nextDouble() * _flipCoin();
+      _seeds.add(FlowerSeed(
+        center: center,
+        mX: mX,
+        mY: mY,
+      ));
     }
   }
 
@@ -113,7 +130,6 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    //  print('controller value: ${_controller.value}');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -149,8 +165,36 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
           _makeColorChangeButton(FlowerColorScheme.Purple, Colors.purple),
           const SizedBox(width: 8),
           _makeColorChangeButton(FlowerColorScheme.Yellow, Colors.yellow),
+          const SizedBox(width: 8),
+          _makePlusPetalsButton(),
+          const SizedBox(width: 8),
+          _makeMinusPetalsButton(),
         ],
       ),
+    );
+  }
+
+  Widget _makePlusPetalsButton() {
+    return ElevatedButton(
+      child: Icon(Icons.add),
+      onPressed: () => setState(() {
+        if (_numPetals <= 12) {
+          _numPetals++;
+          _createFlowers();
+        }
+      }),
+    );
+  }
+
+  Widget _makeMinusPetalsButton() {
+    return ElevatedButton(
+      child: Icon(Icons.remove),
+      onPressed: () => setState(() {
+        if (_numPetals > 4) {
+          _numPetals--;
+          _createFlowers();
+        }
+      }),
     );
   }
 
@@ -168,7 +212,6 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   }
 
   void _changeColor(FlowerColorScheme flowerColorScheme) {
-    double oldProgress = _controller.value;
     setState(() {
       if (_isPlaying) {
         _controller.stop();
@@ -178,9 +221,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
       } else {
         _currentColorScheme = flowerColorScheme;
         _createFlowers();
-        //_controller.repeat();
       }
-      //_controller.value = oldProgress;
     });
   }
 
@@ -204,8 +245,8 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   void _reset() {
     setState(() {
-      _centers.clear();
-      _createCenters();
+      _seeds.clear();
+      _createSeeds();
       _createFlowers();
     });
   }

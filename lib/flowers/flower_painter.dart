@@ -52,9 +52,14 @@ class FlowerPainter extends CustomPainter {
     } else if (flower.flowerType == FlowerTypes.BigSakura) {
       speedFactor = .6;
     }
-    final newDx = flower.center.dx + progress * flower.vx * travelDistance * speedFactor;
-    final newDy = flower.center.dy + progress * flower.vy * travelDistance * speedFactor;
-    final newFlower = flower.copyWith(center: Offset(newDx, newDy));
+    final newDx = flower.seed.center.dx + progress * flower.seed.mX * travelDistance * speedFactor;
+    final newDy = flower.seed.center.dy + progress * flower.seed.mY * travelDistance * speedFactor;
+    final newSeed = flower.seed.copyWith(
+      center: Offset(newDx, newDy),
+    );
+    final newFlower = flower.copyWith(
+      seed: newSeed,
+    );
 
     double theta = 0;
     for (int i = 0; i < flower.numPetals; i++) {
@@ -83,16 +88,16 @@ class FlowerPainter extends CustomPainter {
     required double theta,
   }) {
     _paint.color = flower.color;
-    Offset startPoint = flower.center + Offset(flower.innerRadius * cos(theta), flower.innerRadius * sin(theta));
+    Offset startPoint = flower.seed.center + Offset(flower.innerRadius * cos(theta), flower.innerRadius * sin(theta));
 
-    Offset endPt = flower.center +
+    Offset endPt = flower.seed.center +
         Offset(flower.innerRadius * cos(theta + flower.innerWidthSweep),
             flower.innerRadius * sin(theta + flower.innerWidthSweep));
 
-    Offset pt1 = flower.center +
+    Offset pt1 = flower.seed.center +
         Offset((flower.innerRadius + flower.ctrlPtHeight) * cos(theta - flower.outerWidthDelta),
             (flower.innerRadius + flower.ctrlPtHeight) * sin(theta - flower.outerWidthDelta));
-    Offset pt2 = flower.center +
+    Offset pt2 = flower.seed.center +
         Offset(
             (flower.innerRadius + flower.ctrlPtHeight) * cos(theta + flower.innerWidthSweep + flower.outerWidthDelta),
             (flower.innerRadius + flower.ctrlPtHeight) * sin(theta + flower.innerWidthSweep + flower.outerWidthDelta));
@@ -101,7 +106,7 @@ class FlowerPainter extends CustomPainter {
     petalsPath.cubicTo(pt1.dx, pt1.dy, pt2.dx, pt2.dy, endPt.dx, endPt.dy);
 
     _paint.style = PaintingStyle.fill;
-    canvas.drawCircle(flower.center, flower.innerRadius, _paint);
+    canvas.drawCircle(flower.seed.center, flower.innerRadius, _paint);
     canvas.drawPath(petalsPath, _paint);
 
     _paint.color = flower.flowerStrokeColor;
@@ -118,12 +123,13 @@ class FlowerPainter extends CustomPainter {
     _paint.strokeCap = StrokeCap.round;
     final midTheta = theta + flower.innerWidthSweep / 2;
     final midLineLength = flower.ctrlPtHeight / 4;
-    final innerMidPt = flower.center + Offset(flower.innerRadius * cos(midTheta), flower.innerRadius * sin(midTheta));
-    final outerMidPt = flower.center +
+    final innerMidPt =
+        flower.seed.center + Offset(flower.innerRadius * cos(midTheta), flower.innerRadius * sin(midTheta));
+    final outerMidPt = flower.seed.center +
         Offset((flower.innerRadius + midLineLength / 2) * cos(midTheta),
             (flower.innerRadius + midLineLength / 2) * sin(midTheta));
-    final innerLftPt = flower.center + Offset(flower.innerRadius * cos(theta), flower.innerRadius * sin(theta));
-    final outerLftPt = flower.center +
+    final innerLftPt = flower.seed.center + Offset(flower.innerRadius * cos(theta), flower.innerRadius * sin(theta));
+    final outerLftPt = flower.seed.center +
         Offset((flower.innerRadius + midLineLength * .8) * cos(theta),
             (flower.innerRadius + midLineLength * .8) * sin(theta));
     canvas.drawLine(innerMidPt, outerMidPt, _paint);

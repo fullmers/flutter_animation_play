@@ -3,26 +3,57 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-class Flower {
-  final double vx;
-  final double vy;
+class FlowerSeed {
+  final double mX;
+  final double mY;
   final Offset center;
+
+  const FlowerSeed({
+    required this.center,
+    required this.mX,
+    required this.mY,
+  });
+
+  FlowerSeed copyWith({
+    double? mX,
+    double? mY,
+    Offset? center,
+  }) {
+    return FlowerSeed(
+      center: center ?? this.center,
+      mY: mY ?? this.mY,
+      mX: mX ?? this.mX,
+    );
+  }
+}
+
+class Flower {
+  final FlowerSeed seed;
   final FlowerTypes flowerType;
   final FlowerColorScheme flowerColorScheme;
+  final int numPetals;
+
+  const Flower({
+    required this.seed,
+    required this.flowerType,
+    required this.flowerColorScheme,
+    required this.numPetals,
+  });
 
   Flower copyWith({
     double? vx,
     double? vy,
     Offset? center,
+    FlowerSeed? seed,
     FlowerTypes? flowerType,
     FlowerColorScheme? flowerColorScheme,
+    int? numPetals,
   }) {
     return (Flower(
-      center: center ?? this.center,
-      vy: vy ?? this.vy,
-      vx: vx ?? this.vx,
+      seed: seed ?? this.seed,
       flowerType: flowerType ?? this.flowerType,
       flowerColorScheme: flowerColorScheme ?? this.flowerColorScheme,
+      numPetals: numPetals ?? this.numPetals,
     ));
   }
 
@@ -122,27 +153,14 @@ class Flower {
       case FlowerColorScheme.Yellow:
         switch (flowerType) {
           case FlowerTypes.BigSakura:
-            return Colors.yellow[300]!;
-          case FlowerTypes.MediumSakura:
             return Colors.yellow[400]!;
-          case FlowerTypes.SmallSakura:
+          case FlowerTypes.MediumSakura:
             return Colors.yellow[600]!;
+          case FlowerTypes.SmallSakura:
+            return Colors.yellow[700]!;
         }
     }
   }
-
-  //todo update this when you have more types
-  int get numPetals {
-    return 5;
-  }
-
-  const Flower({
-    required this.center,
-    required this.vx,
-    required this.vy,
-    required this.flowerType,
-    required this.flowerColorScheme,
-  });
 }
 
 enum FlowerTypes {
