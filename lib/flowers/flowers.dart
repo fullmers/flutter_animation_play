@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../animation_controller_buttons.dart';
+import 'color_change_button.dart';
 import 'flower.dart';
 import 'flower_painter.dart';
 
@@ -87,19 +88,11 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
     }
   }
 
-  int _flipCoin() {
-    if (_random.nextBool()) {
-      return 1;
-    } else {
-      return -1;
-    }
-  }
-
   void _createSeeds() {
     for (int i = 0; i < _numFlowers; i++) {
       final center = _makeRandomCenter();
-      final mX = _random.nextDouble() * _flipCoin();
-      final mY = _random.nextDouble() * _flipCoin();
+      final mX = _random.nextDouble() * (_random.nextBool() ? 1 : -1);
+      final mY = _random.nextDouble() * (_random.nextBool() ? 1 : -1);
       _seeds.add(FlowerSeed(
         center: center,
         mX: mX,
@@ -154,60 +147,57 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
             ),
           ),
           const SizedBox(width: 8),
-          _makeColorChangeButton(FlowerColorScheme.Green, Colors.green),
+          ColorChangeButton(
+            buttonColor: Colors.green,
+            onTap: () => _changeColor(FlowerColorScheme.Green),
+          ),
           const SizedBox(width: 8),
-          _makeColorChangeButton(FlowerColorScheme.Pink, Colors.pink),
+          ColorChangeButton(
+            buttonColor: Colors.pink,
+            onTap: () => _changeColor(FlowerColorScheme.Pink),
+          ),
           const SizedBox(width: 8),
-          _makeColorChangeButton(FlowerColorScheme.Blue, Colors.blue),
+          ColorChangeButton(
+            buttonColor: Colors.blue,
+            onTap: () => _changeColor(FlowerColorScheme.Blue),
+          ),
           const SizedBox(width: 8),
-          _makeColorChangeButton(FlowerColorScheme.Orange, Colors.orange),
+          ColorChangeButton(
+            buttonColor: Colors.orange,
+            onTap: () => _changeColor(FlowerColorScheme.Orange),
+          ),
           const SizedBox(width: 8),
-          _makeColorChangeButton(FlowerColorScheme.Purple, Colors.purple),
+          ColorChangeButton(
+            buttonColor: Colors.purple,
+            onTap: () => _changeColor(FlowerColorScheme.Purple),
+          ),
           const SizedBox(width: 8),
-          _makeColorChangeButton(FlowerColorScheme.Yellow, Colors.yellow),
+          ColorChangeButton(
+            buttonColor: Colors.yellow,
+            onTap: () => _changeColor(FlowerColorScheme.Yellow),
+          ),
           const SizedBox(width: 8),
-          _makePlusPetalsButton(),
+          ElevatedButton(
+            child: Icon(Icons.add),
+            onPressed: () => setState(() {
+              if (_numPetals <= 12) {
+                _numPetals++;
+                _createFlowers();
+              }
+            }),
+          ),
           const SizedBox(width: 8),
-          _makeMinusPetalsButton(),
+          ElevatedButton(
+            child: Icon(Icons.remove),
+            onPressed: () => setState(() {
+              if (_numPetals > 4) {
+                _numPetals--;
+                _createFlowers();
+              }
+            }),
+          ),
         ],
       ),
-    );
-  }
-
-  Widget _makePlusPetalsButton() {
-    return ElevatedButton(
-      child: Icon(Icons.add),
-      onPressed: () => setState(() {
-        if (_numPetals <= 12) {
-          _numPetals++;
-          _createFlowers();
-        }
-      }),
-    );
-  }
-
-  Widget _makeMinusPetalsButton() {
-    return ElevatedButton(
-      child: Icon(Icons.remove),
-      onPressed: () => setState(() {
-        if (_numPetals > 4) {
-          _numPetals--;
-          _createFlowers();
-        }
-      }),
-    );
-  }
-
-  Widget _makeColorChangeButton(FlowerColorScheme scheme, Color color) {
-    return InkWell(
-      child: Container(
-          height: 30,
-          width: 30,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            color: color,
-          )),
-      onTap: () => _changeColor(scheme),
     );
   }
 
