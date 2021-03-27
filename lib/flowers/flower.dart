@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+/// [FlowerSeed] contains position and direction data for a [Flower] (particle)
 class FlowerSeed {
   final double mX;
   final double mY;
@@ -27,10 +28,21 @@ class FlowerSeed {
   }
 }
 
+/// [Flower] bundles the positional data of a flower particle with it's appearance. It is used for painting flowers in
+/// [FlowerPainter].
+
 class Flower {
+  /// the [seed] contains the position and direction data of the flower. This should not change.
   final FlowerSeed seed;
-  final FlowerTypes flowerType;
+
+  /// The [flowerType] describes which kind of flower is being drawn. This is used to determine appearance variables such
+  /// as inner radius and petal height
+  final FlowerType flowerType;
+
+  /// the color scheme of the given flower, used to determine petal fill and stroke color, depending on the [flowerType]
   final FlowerColorScheme flowerColorScheme;
+
+  /// number of petals on the given flower. can range from 4-12.
   final int numPetals;
 
   const Flower({
@@ -45,7 +57,7 @@ class Flower {
     double? vy,
     Offset? center,
     FlowerSeed? seed,
-    FlowerTypes? flowerType,
+    FlowerType? flowerType,
     FlowerColorScheme? flowerColorScheme,
     int? numPetals,
   }) {
@@ -57,32 +69,37 @@ class Flower {
     ));
   }
 
+  /// used the calculate the end control points for the bezier curve defining the flower petals
   double get innerWidthSweep => 2 * pi / numPetals;
 
+  /// used to calculate the inner control points for the bezier curve defining the flower petals
   double get outerWidthDelta => pi / (numPetals * 8);
 
+  /// how big the inner part of the flower is. Depends on the [flowerType]
   double get innerRadius {
     switch (flowerType) {
-      case FlowerTypes.BigSakura:
+      case FlowerType.BigSakura:
         return 12;
-      case FlowerTypes.MediumSakura:
+      case FlowerType.MediumSakura:
         return 8;
-      case FlowerTypes.SmallSakura:
+      case FlowerType.SmallSakura:
         return 4;
     }
   }
 
+  /// the bezier control point height used to calculate the petal curve. It is determined by the [flowerType]
   double get ctrlPtHeight {
     switch (flowerType) {
-      case FlowerTypes.BigSakura:
+      case FlowerType.BigSakura:
         return 100;
-      case FlowerTypes.MediumSakura:
+      case FlowerType.MediumSakura:
         return 80;
-      case FlowerTypes.SmallSakura:
+      case FlowerType.SmallSakura:
         return 50;
     }
   }
 
+  /// the color that outlines the flower petals. it is a function of the [flowerColorScheme]
   Color get flowerStrokeColor {
     switch (flowerColorScheme) {
       case FlowerColorScheme.Orange:
@@ -100,73 +117,84 @@ class Flower {
     }
   }
 
-  Color get color {
+  /// the color for the inside of the flower petals. it is a function of the [flowerType] and [flowerColorScheme]
+  Color get petalFillColor {
     final bigColorIndex = 200;
     final mediumColorIndex = 500;
     final smallColorIndex = 800;
     switch (flowerColorScheme) {
       case FlowerColorScheme.Orange:
         switch (flowerType) {
-          case FlowerTypes.BigSakura:
+          case FlowerType.BigSakura:
             return Colors.orange[bigColorIndex]!;
-          case FlowerTypes.MediumSakura:
+          case FlowerType.MediumSakura:
             return Colors.orange[mediumColorIndex]!;
-          case FlowerTypes.SmallSakura:
+          case FlowerType.SmallSakura:
             return Colors.orange[smallColorIndex]!;
         }
       case FlowerColorScheme.Blue:
         switch (flowerType) {
-          case FlowerTypes.BigSakura:
+          case FlowerType.BigSakura:
             return Colors.lightBlue[bigColorIndex]!;
-          case FlowerTypes.MediumSakura:
+          case FlowerType.MediumSakura:
             return Colors.lightBlue[mediumColorIndex]!;
-          case FlowerTypes.SmallSakura:
+          case FlowerType.SmallSakura:
             return Colors.lightBlue[smallColorIndex]!;
         }
       case FlowerColorScheme.Green:
         switch (flowerType) {
-          case FlowerTypes.BigSakura:
+          case FlowerType.BigSakura:
             return Colors.green[bigColorIndex]!;
-          case FlowerTypes.MediumSakura:
+          case FlowerType.MediumSakura:
             return Colors.green[mediumColorIndex]!;
-          case FlowerTypes.SmallSakura:
+          case FlowerType.SmallSakura:
             return Colors.green[smallColorIndex]!;
         }
       case FlowerColorScheme.Pink:
         switch (flowerType) {
-          case FlowerTypes.BigSakura:
+          case FlowerType.BigSakura:
             return Colors.pink[bigColorIndex]!;
-          case FlowerTypes.MediumSakura:
+          case FlowerType.MediumSakura:
             return Colors.pink[mediumColorIndex]!;
-          case FlowerTypes.SmallSakura:
+          case FlowerType.SmallSakura:
             return Colors.pink[smallColorIndex]!;
         }
       case FlowerColorScheme.Purple:
         switch (flowerType) {
-          case FlowerTypes.BigSakura:
+          case FlowerType.BigSakura:
             return Colors.deepPurple[bigColorIndex]!;
-          case FlowerTypes.MediumSakura:
+          case FlowerType.MediumSakura:
             return Colors.deepPurple[mediumColorIndex]!;
-          case FlowerTypes.SmallSakura:
+          case FlowerType.SmallSakura:
             return Colors.deepPurple[smallColorIndex]!;
         }
       case FlowerColorScheme.Yellow:
         switch (flowerType) {
-          case FlowerTypes.BigSakura:
-            return Colors.yellow[400]!;
-          case FlowerTypes.MediumSakura:
-            return Colors.yellow[600]!;
-          case FlowerTypes.SmallSakura:
+          case FlowerType.BigSakura:
+            return Colors.yellow[300]!;
+          case FlowerType.MediumSakura:
+            return Colors.yellow[500]!;
+          case FlowerType.SmallSakura:
             return Colors.yellow[700]!;
         }
     }
   }
 }
 
-enum FlowerTypes {
+/// [FlowerType] is used to determine the shape of the flower (size and petal shape)
+enum FlowerType {
   SmallSakura,
   MediumSakura,
   BigSakura,
 }
 
-enum FlowerColorScheme { Orange, Blue, Green, Pink, Purple, Yellow }
+/// A simple theme for the flowers. If the flowers have an "Orange" color scheme, for example, they will all
+/// be colored some variant of Colors.Orange, depending on their size.
+enum FlowerColorScheme {
+  Orange,
+  Blue,
+  Green,
+  Pink,
+  Purple,
+  Yellow,
+}

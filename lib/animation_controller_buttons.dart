@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 
+/// [AnimationControllerButtons] A row of common controller buttons (play/pause and reset)
+/// for animations, and their callbacks.
 class AnimationControllerButtons extends StatelessWidget {
   AnimationControllerButtons({
     required this.isPlaying,
     required this.onPressPlayPause,
     required this.onPressReset,
   });
+
+  /// is the current animation playing. if yes, the play/pause button displays the "pause" icon. otherwise, it shows
+  /// the "play" button
   final bool isPlaying;
+
+  /// function from parent widget which should toggle play/pause in the parent's animation controller
   final Function() onPressPlayPause;
+
+  /// function from parent widget which should reset the parent's animation controller
   final Function() onPressReset;
 
   @override
