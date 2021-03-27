@@ -28,6 +28,9 @@ class Flowers extends StatefulWidget {
   _FlowersState createState() => _FlowersState();
 }
 
+const int minNumPetals = 4;
+const int maxNumPetals = 10;
+
 class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -178,7 +181,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
           ElevatedButton(
             child: Icon(Icons.add),
             onPressed: () => setState(() {
-              if (_numPetals <= 12) {
+              if (_numPetals <= maxNumPetals) {
                 _numPetals++;
                 _createFlowers();
               }
@@ -188,7 +191,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
           ElevatedButton(
             child: Icon(Icons.remove),
             onPressed: () => setState(() {
-              if (_numPetals > 4) {
+              if (_numPetals > minNumPetals) {
                 _numPetals--;
                 _createFlowers();
               }

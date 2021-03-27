@@ -42,7 +42,7 @@ class Flower {
   /// the color scheme of the given flower, used to determine petal fill and stroke color, depending on the [flowerType]
   final FlowerColorScheme flowerColorScheme;
 
-  /// number of petals on the given flower. can range from 4-12.
+  /// number of petals on the given flower. can range from 4-10.
   final int numPetals;
 
   const Flower({
