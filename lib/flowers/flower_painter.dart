@@ -25,7 +25,39 @@ class FlowerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     petalsPath.reset();
+    _drawWaves(canvas: canvas, size: size);
     _drawFlowers(canvas: canvas, flowers: flowers);
+  }
+
+  void _drawWaves({required Canvas canvas, required Size size}) {
+    int numCols = 20;
+    final width = size.width;
+    final colWidth = width / numCols;
+    int numRows = (size.height / colWidth).ceil() * 2;
+    double dy = 0.0;
+    for (int j = 0; j < numRows; j++) {
+      for (int i = 0; i < numCols; i++) {
+        double dx;
+        if (j % 2 == 0) {
+          dx = i * colWidth + colWidth / 2;
+        } else {
+          dx = i * colWidth;
+        }
+        dy = colWidth * j; //12.0 * j;
+        _paint.style = PaintingStyle.fill;
+        _paint.color = Colors.yellow[100]!;
+        canvas.drawCircle(Offset(dx, dy), 20, _paint);
+
+        _paint.style = PaintingStyle.stroke;
+        _paint.strokeWidth = 2;
+        _paint.color = Colors.black54;
+        canvas.drawCircle(Offset(dx, dy), 20, _paint);
+        // canvas.drawCircle(Offset(dx, dy), 16, _paint);
+        canvas.drawCircle(Offset(dx, dy), 12, _paint);
+        //canvas.drawCircle(Offset(dx, dy), 8, _paint);
+        canvas.drawCircle(Offset(dx, dy), 4, _paint);
+      }
+    }
   }
 
   void _drawFlowers({

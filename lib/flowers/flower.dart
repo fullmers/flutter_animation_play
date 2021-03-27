@@ -91,9 +91,9 @@ class Flower {
   double get ctrlPtHeight {
     switch (flowerType) {
       case FlowerType.BigSakura:
-        return 100;
+        return 150;
       case FlowerType.MediumSakura:
-        return 80;
+        return 100;
       case FlowerType.SmallSakura:
         return 50;
     }
