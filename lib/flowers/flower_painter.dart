@@ -45,11 +45,11 @@ class FlowerPainter extends CustomPainter {
     required Flower flower,
   }) {
     petalsPath.reset();
-    final travelDistance = 500;
+    final travelDistance = 200;
     double speedFactor = 1;
-    if (flower.flowerType == FlowerTypes.SmallSakura) {
+    if (flower.flowerType == FlowerType.SmallSakura) {
       speedFactor = 1.2;
-    } else if (flower.flowerType == FlowerTypes.BigSakura) {
+    } else if (flower.flowerType == FlowerType.BigSakura) {
       speedFactor = .6;
     }
     final newDx = flower.seed.center.dx + progress * flower.seed.mX * travelDistance * speedFactor;
@@ -87,7 +87,7 @@ class FlowerPainter extends CustomPainter {
     required Flower flower,
     required double theta,
   }) {
-    _paint.color = flower.color;
+    _paint.color = flower.petalFillColor;
     Offset startPoint = flower.seed.center + Offset(flower.innerRadius * cos(theta), flower.innerRadius * sin(theta));
 
     Offset endPt = flower.seed.center +

@@ -28,24 +28,18 @@ class Flowers extends StatefulWidget {
   _FlowersState createState() => _FlowersState();
 }
 
-enum MyControllerState {
-  Forward,
-  Pause,
-  Backward,
-}
-
 class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
-  final int durationInMs = 7000;
-  MyControllerState controllerState = MyControllerState.Pause;
-
   late AnimationController _controller;
-  bool _isPlaying = false;
-  FlowerColorScheme _currentColorScheme = FlowerColorScheme.Green;
+
   final _random = Random();
   final List<Flower> _flowers = [];
   final List<FlowerSeed> _seeds = [];
   final int _numFlowers = 30;
+  final int _durationInMs = 10000;
+
   int _numPetals = 5;
+  bool _isPlaying = false;
+  FlowerColorScheme _currentColorScheme = FlowerColorScheme.Green;
 
   // beginning and end fields of Tween not needed, since the duration field in the controller provides this
   static final _animation = Tween<double>();
@@ -55,37 +49,23 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: durationInMs),
+      duration: Duration(milliseconds: _durationInMs),
     );
     _animation.animate(_controller)
       ..addListener(() {
         setState(() {});
+      })
+      ..addStatusListener((status) {
+        if (_controller.status == AnimationStatus.completed) {
+          _controller.reverse();
+        }
+        if (_controller.status == AnimationStatus.dismissed) {
+          _controller.forward();
+        }
       });
 
     _createSeeds();
     _createFlowers();
-  }
-
-  void _createFlowers() {
-    _flowers.clear();
-    final int numSmallFlowers = _getNumFlowers(FlowerTypes.SmallSakura);
-    FlowerTypes type;
-    for (int i = 0; i < _seeds.length; i++) {
-      if (i < numSmallFlowers) {
-        type = FlowerTypes.SmallSakura;
-      } else if (i >= numSmallFlowers && i < (numSmallFlowers + _getNumFlowers(FlowerTypes.MediumSakura))) {
-        type = FlowerTypes.MediumSakura;
-      } else {
-        type = FlowerTypes.BigSakura;
-      }
-      Flower flower = Flower(
-        flowerType: type,
-        seed: _seeds[i],
-        flowerColorScheme: _currentColorScheme,
-        numPetals: _numPetals,
-      );
-      _flowers.add(flower);
-    }
   }
 
   void _createSeeds() {
@@ -101,17 +81,35 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
     }
   }
 
-  int _getNumFlowers(FlowerTypes flowerType) {
+  Offset _makeRandomCenter() {
+    double dx = _random.nextDouble() * widget.width;
+    double dy = _random.nextDouble() * widget.height;
+    return Offset(dx, dy);
+  }
+
+  void _createFlowers() {
+    _flowers.clear();
+    for (int i = 0; i < _seeds.length; i++) {
+      Flower flower = Flower(
+        flowerType: _getFlowerType(i),
+        seed: _seeds[i],
+        flowerColorScheme: _currentColorScheme,
+        numPetals: _numPetals,
+      );
+      _flowers.add(flower);
+    }
+  }
+
+  FlowerType _getFlowerType(int i) {
     final int numBigFlowers = (_numFlowers / 6).floor();
     final int numMediumFlowers = numBigFlowers * 2;
     final int numSmallFlowers = _numFlowers - numMediumFlowers - numBigFlowers;
-    switch (flowerType) {
-      case FlowerTypes.BigSakura:
-        return numBigFlowers;
-      case FlowerTypes.MediumSakura:
-        return numMediumFlowers;
-      case FlowerTypes.SmallSakura:
-        return numSmallFlowers;
+    if (i < numSmallFlowers) {
+      return FlowerType.SmallSakura;
+    } else if (i >= numSmallFlowers && i < (numSmallFlowers + numMediumFlowers)) {
+      return FlowerType.MediumSakura;
+    } else {
+      return FlowerType.BigSakura;
     }
   }
 
@@ -207,7 +205,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
         _controller.stop();
         _currentColorScheme = flowerColorScheme;
         _createFlowers();
-        _controller.repeat();
+        _controller.forward();
       } else {
         _currentColorScheme = flowerColorScheme;
         _createFlowers();
@@ -215,16 +213,10 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
     });
   }
 
-  Offset _makeRandomCenter() {
-    double dx = _random.nextDouble() * widget.width;
-    double dy = _random.nextDouble() * widget.height;
-    return Offset(dx, dy);
-  }
-
   void _playOrPause() {
     setState(() {
       if (_isPlaying == false) {
-        _controller.repeat();
+        _controller.forward();
         _isPlaying = true;
       } else {
         _controller.stop();
