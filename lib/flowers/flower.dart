@@ -79,11 +79,11 @@ class Flower {
   double get innerRadius {
     switch (flowerType) {
       case FlowerType.BigSakura:
-        return 12;
+        return 10;
       case FlowerType.MediumSakura:
-        return 8;
+        return 6;
       case FlowerType.SmallSakura:
-        return 4;
+        return 3;
     }
   }
 
@@ -91,11 +91,11 @@ class Flower {
   double get ctrlPtHeight {
     switch (flowerType) {
       case FlowerType.BigSakura:
-        return 150;
+        return 120;
       case FlowerType.MediumSakura:
-        return 100;
+        return 80;
       case FlowerType.SmallSakura:
-        return 50;
+        return 40;
     }
   }
 
@@ -113,7 +113,7 @@ class Flower {
       case FlowerColorScheme.Purple:
         return Colors.deepPurple[100]!;
       case FlowerColorScheme.Yellow:
-        return Colors.yellow[200]!;
+        return Colors.yellow[600]!;
     }
   }
 

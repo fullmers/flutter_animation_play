@@ -33,17 +33,17 @@ class FlowerPainter extends CustomPainter {
     int numCols = 20;
     final width = size.width;
     final colWidth = width / numCols;
-    int numRows = (size.height / colWidth).ceil() * 2;
+    int numRows = (size.height / colWidth).ceil();
     double dy = 0.0;
     for (int j = 0; j < numRows; j++) {
-      for (int i = 0; i < numCols; i++) {
+      for (int i = 0; i < numCols + 1; i++) {
         double dx;
         if (j % 2 == 0) {
           dx = i * colWidth + colWidth / 2;
         } else {
           dx = i * colWidth;
         }
-        dy = colWidth * j; //12.0 * j;
+        dy = colWidth * j;
         _paint.style = PaintingStyle.fill;
         _paint.color = Colors.yellow[100]!;
         canvas.drawCircle(Offset(dx, dy), 20, _paint);

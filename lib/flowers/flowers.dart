@@ -37,8 +37,8 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   final _random = Random();
   final List<Flower> _flowers = [];
   final List<FlowerSeed> _seeds = [];
-  final int _numFlowers = 30;
-  final int _durationInMs = 10000;
+  final int _numFlowers = 20;
+  final int _durationInMs = 3000;
 
   int _numPetals = 5;
   bool _isPlaying = false;
@@ -204,15 +204,8 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   void _changeColor(FlowerColorScheme flowerColorScheme) {
     setState(() {
-      if (_isPlaying) {
-        _controller.stop();
-        _currentColorScheme = flowerColorScheme;
-        _createFlowers();
-        _controller.forward();
-      } else {
-        _currentColorScheme = flowerColorScheme;
-        _createFlowers();
-      }
+      _currentColorScheme = flowerColorScheme;
+      _createFlowers();
     });
   }
 
