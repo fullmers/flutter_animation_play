@@ -21,13 +21,146 @@ class FlowerPainter extends CustomPainter {
 
   final _paint = Paint();
   Path petalsPath = Path();
+  Path bigFlowerPath = Path();
+  Path mediumFlowerPath = Path();
+  Path smallFlowerPath = Path();
+  Path bigFlowerStamp = Path();
+  Path mediumFlowerStamp = Path();
+  Path smallFlowerStamp = Path();
+  int _numPetals = 5;
 
   // it appears that paint is called in desktop every time the mouse moves over a new widget, or in and out of the
   // program screen
   @override
   void paint(Canvas canvas, Size size) {
     petalsPath.reset();
-    _drawFlowers(canvas: canvas, flowers: flowers);
+    //  _drawFlowers(canvas: canvas, flowers: flowers);
+    bigFlowerStamp = createFlowerStamp(canvas, FlowerType.BigSakura);
+    mediumFlowerStamp = createFlowerStamp(canvas, FlowerType.MediumSakura);
+    smallFlowerStamp = createFlowerStamp(canvas, FlowerType.SmallSakura);
+    _drawBigFlowers(canvas: canvas, flowers: flowers);
+  }
+
+  Path createFlowerStamp(Canvas canvas, FlowerType flowerType) {
+    Path path = Path();
+    double innerRadius = Flower.getInnerRadius(flowerType);
+    double ctrlPtHeight = Flower.getCtrlPtHeight(flowerType);
+    double theta = 0;
+    double innerWidthSweep = 2 * pi / _numPetals;
+    double outerWidthDelta = pi / (_numPetals * 8);
+
+    for (int i = 0; i < _numPetals; i++) {
+      theta = theta + 2 * pi / _numPetals;
+      Offset startPoint = Offset(innerRadius * cos(theta), innerRadius * sin(theta));
+      path.moveTo(startPoint.dx, startPoint.dy);
+
+      Offset endPt = Offset(innerRadius * cos(theta + innerWidthSweep), innerRadius * sin(theta + innerWidthSweep));
+
+      Offset pt1 = Offset((innerRadius + ctrlPtHeight) * cos(theta - outerWidthDelta),
+          (innerRadius + ctrlPtHeight) * sin(theta - outerWidthDelta));
+      Offset pt2 = Offset((innerRadius + ctrlPtHeight) * cos(theta + innerWidthSweep + outerWidthDelta),
+          (innerRadius + ctrlPtHeight) * sin(theta + innerWidthSweep + outerWidthDelta));
+      path.cubicTo(pt1.dx, pt1.dy, pt2.dx, pt2.dy, endPt.dx, endPt.dy);
+
+      final midTheta = theta + innerWidthSweep / 2;
+      final midLineLength = ctrlPtHeight / 4;
+      final tempPath = Path();
+
+      final innerMidPt = Offset(innerRadius * cos(midTheta), innerRadius * sin(midTheta));
+      final outerMidPt =
+          Offset((innerRadius + midLineLength / 2) * cos(midTheta), (innerRadius + midLineLength / 2) * sin(midTheta));
+      tempPath.moveTo(innerMidPt.dx, innerMidPt.dy);
+      tempPath.lineTo(outerMidPt.dx, outerMidPt.dy);
+      path.addPath(tempPath, innerMidPt);
+      path.addOval(Rect.fromCircle(center: Offset.zero, radius: innerRadius));
+    }
+    return path;
+  }
+
+  void _drawBigFlowers({
+    required Canvas canvas,
+    required List<Flower> flowers,
+  }) {
+    for (int i = 0; i < flowers.length; i++) {
+      _createFlowerPaths(
+        canvas: canvas,
+        flower: flowers[i],
+      );
+    }
+    List<PathMetric> bigPathMetrics = bigFlowerPath.computeMetrics().toList(growable: true);
+    for (var pathMetric in bigPathMetrics) {
+      Path extractPath = pathMetric.extractPath(
+        0.0,
+        pathMetric.length,
+      );
+      _paint.style = PaintingStyle.fill;
+      _paint.color = flowers[0].petalFillColor;
+      canvas.drawPath(extractPath, _paint);
+      _paint.color = flowers[0].flowerStrokeColor;
+      _paint.style = PaintingStyle.stroke;
+      _paint.strokeWidth = 1;
+      _paint.strokeCap = StrokeCap.round;
+      canvas.drawPath(extractPath, _paint);
+    }
+
+    List<PathMetric> mediumPathMetrics = mediumFlowerPath.computeMetrics().toList(growable: true);
+    for (var pathMetric in mediumPathMetrics) {
+      Path extractPath = pathMetric.extractPath(
+        0.0,
+        pathMetric.length,
+      );
+      _paint.style = PaintingStyle.fill;
+      _paint.color = flowers[0].petalFillColor;
+      canvas.drawPath(extractPath, _paint);
+      _paint.color = flowers[0].flowerStrokeColor;
+      _paint.style = PaintingStyle.stroke;
+      _paint.strokeWidth = 1;
+      _paint.strokeCap = StrokeCap.round;
+      canvas.drawPath(extractPath, _paint);
+    }
+
+    List<PathMetric> smallPathMetrics = bigFlowerPath.computeMetrics().toList(growable: true);
+    for (var pathMetric in smallPathMetrics) {
+      Path extractPath = pathMetric.extractPath(
+        0.0,
+        pathMetric.length,
+      );
+      _paint.style = PaintingStyle.fill;
+      _paint.color = flowers[0].petalFillColor;
+      canvas.drawPath(extractPath, _paint);
+      _paint.color = flowers[0].flowerStrokeColor;
+      _paint.style = PaintingStyle.stroke;
+      _paint.strokeWidth = 1;
+      _paint.strokeCap = StrokeCap.round;
+      canvas.drawPath(extractPath, _paint);
+    }
+  }
+
+  void _createFlowerPaths({
+    required Canvas canvas,
+    required Flower flower,
+  }) {
+    final travelDistance = 200;
+    double speedFactor = 1;
+    if (flower.flowerType == FlowerType.SmallSakura) {
+      speedFactor = 1.2;
+    } else if (flower.flowerType == FlowerType.BigSakura) {
+      speedFactor = .6;
+    }
+    final newDx = flower.seed.center.dx + progress * flower.seed.mX * travelDistance * speedFactor + 200;
+    final newDy = flower.seed.center.dy + progress * flower.seed.mY * travelDistance * speedFactor + 0;
+
+    switch (flower.flowerType) {
+      case FlowerType.SmallSakura:
+        smallFlowerPath.addPath(smallFlowerStamp, Offset(newDx, newDy));
+        break;
+      case FlowerType.MediumSakura:
+        mediumFlowerPath.addPath(mediumFlowerStamp, Offset(newDx, newDy));
+        break;
+      case FlowerType.BigSakura:
+        bigFlowerPath.addPath(bigFlowerStamp, Offset(newDx, newDy));
+        break;
+    }
   }
 
   void _drawFlowers({

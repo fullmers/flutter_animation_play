@@ -76,7 +76,9 @@ class Flower {
   double get outerWidthDelta => pi / (numPetals * 8);
 
   /// how big the inner part of the flower is. Depends on the [flowerType]
-  double get innerRadius {
+  double get innerRadius => getInnerRadius(flowerType);
+
+  static double getInnerRadius(FlowerType flowerType) {
     switch (flowerType) {
       case FlowerType.BigSakura:
         return 10;
@@ -88,7 +90,9 @@ class Flower {
   }
 
   /// the bezier control point height used to calculate the petal curve. It is determined by the [flowerType]
-  double get ctrlPtHeight {
+  double get ctrlPtHeight => getCtrlPtHeight(flowerType);
+
+  static double getCtrlPtHeight(FlowerType flowerType) {
     switch (flowerType) {
       case FlowerType.BigSakura:
         return 120;

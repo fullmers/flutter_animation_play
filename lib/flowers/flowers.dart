@@ -38,7 +38,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   final _random = Random();
   final List<Flower> _flowers = [];
   final List<FlowerSeed> _seeds = [];
-  final int _numFlowers = 15;
+  final int _numFlowers = 30;
   final int _durationInMs = 8000;
   late double _openControlBarHeight = 200;
   late double _minControlBarHeight = 56;
@@ -93,7 +93,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   Offset _makeRandomCenter() {
     double dx = _random.nextDouble() * widget.width;
-    double dy = _random.nextDouble() * (widget.height - _toolBarHeight - 70);
+    double dy = _random.nextDouble() * widget.height + _toolBarHeight; //(widget.height - _toolBarHeight - 70);
     return Offset(dx, dy);
   }
 
