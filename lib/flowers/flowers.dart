@@ -37,8 +37,9 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   final _random = Random();
   final List<Flower> _flowers = [];
   final List<FlowerSeed> _seeds = [];
-  final int _numFlowers = 20;
+  final int _numFlowers = 30;
   final int _durationInMs = 3000;
+  Color _waveColor = Colors.green[100]!;
 
   int _numPetals = 5;
   bool _isPlaying = false;
@@ -74,6 +75,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   void _createSeeds() {
     for (int i = 0; i < _numFlowers; i++) {
       final center = _makeRandomCenter();
+      //final center = _makeCenterPoint();
       final mX = _random.nextDouble() * (_random.nextBool() ? 1 : -1);
       final mY = _random.nextDouble() * (_random.nextBool() ? 1 : -1);
       _seeds.add(FlowerSeed(
@@ -127,79 +129,141 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        shadowColor: Colors.green,
+        elevation: 0,
       ),
-      body: CustomPaint(
-        foregroundPainter: FlowerPainter(
-          progress: _controller.value,
-          flowers: _flowers,
-        ),
-        child: Container(
-          color: Colors.yellow[50],
-        ),
-      ),
-      floatingActionButton: Row(
+      body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 30.0),
-            child: AnimationControllerButtons(
-              isPlaying: _isPlaying,
-              onPressPlayPause: _playOrPause,
-              onPressReset: _reset,
+          CustomPaint(
+            foregroundPainter: FlowerPainter(
+              progress: _controller.value,
+              flowers: _flowers,
+              waveColor: _waveColor,
+            ),
+            child: Container(
+              color: Colors.yellow[50],
+              height: MediaQuery.of(context).size.height - 176,
             ),
           ),
-          const SizedBox(width: 8),
-          ColorChangeButton(
-            buttonColor: Colors.green,
-            onTap: () => _changeColor(FlowerColorScheme.Green),
-          ),
-          const SizedBox(width: 8),
-          ColorChangeButton(
-            buttonColor: Colors.pink,
-            onTap: () => _changeColor(FlowerColorScheme.Pink),
-          ),
-          const SizedBox(width: 8),
-          ColorChangeButton(
-            buttonColor: Colors.blue,
-            onTap: () => _changeColor(FlowerColorScheme.Blue),
-          ),
-          const SizedBox(width: 8),
-          ColorChangeButton(
-            buttonColor: Colors.orange,
-            onTap: () => _changeColor(FlowerColorScheme.Orange),
-          ),
-          const SizedBox(width: 8),
-          ColorChangeButton(
-            buttonColor: Colors.purple,
-            onTap: () => _changeColor(FlowerColorScheme.Purple),
-          ),
-          const SizedBox(width: 8),
-          ColorChangeButton(
-            buttonColor: Colors.yellow,
-            onTap: () => _changeColor(FlowerColorScheme.Yellow),
-          ),
-          const SizedBox(width: 8),
-          ElevatedButton(
-            child: Icon(Icons.add),
-            onPressed: () => setState(() {
-              if (_numPetals <= maxNumPetals) {
-                _numPetals++;
-                _createFlowers();
-              }
-            }),
-          ),
-          const SizedBox(width: 8),
-          ElevatedButton(
-            child: Icon(Icons.remove),
-            onPressed: () => setState(() {
-              if (_numPetals > minNumPetals) {
-                _numPetals--;
-                _createFlowers();
-              }
-            }),
+          Container(
+            height: 120,
+            color: Colors.white,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    AnimationControllerButtons(
+                      isPlaying: _isPlaying,
+                      onPressPlayPause: _playOrPause,
+                      onPressReset: _reset,
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      child: Icon(Icons.add),
+                      onPressed: () => setState(() {
+                        if (_numPetals <= maxNumPetals) {
+                          _numPetals++;
+                          _createFlowers();
+                        }
+                      }),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      child: Icon(Icons.remove),
+                      onPressed: () => setState(() {
+                        if (_numPetals > minNumPetals) {
+                          _numPetals--;
+                          _createFlowers();
+                        }
+                      }),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const SizedBox(width: 30),
+                    ColorChangeButton(
+                      buttonColor: Colors.green,
+                      onTap: () => _changeColor(FlowerColorScheme.Green),
+                    ),
+                    const SizedBox(width: 8),
+                    ColorChangeButton(
+                      buttonColor: Colors.pink,
+                      onTap: () => _changeColor(FlowerColorScheme.Pink),
+                    ),
+                    const SizedBox(width: 8),
+                    ColorChangeButton(
+                      buttonColor: Colors.blue,
+                      onTap: () => _changeColor(FlowerColorScheme.Blue),
+                    ),
+                    const SizedBox(width: 8),
+                    ColorChangeButton(
+                      buttonColor: Colors.orange,
+                      onTap: () => _changeColor(FlowerColorScheme.Orange),
+                    ),
+                    const SizedBox(width: 8),
+                    ColorChangeButton(
+                      buttonColor: Colors.purple,
+                      onTap: () => _changeColor(FlowerColorScheme.Purple),
+                    ),
+                    const SizedBox(width: 8),
+                    ColorChangeButton(
+                      buttonColor: Colors.yellow,
+                      onTap: () => _changeColor(FlowerColorScheme.Yellow),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(children: [
+                  const SizedBox(width: 30),
+                  ColorChangeButton(
+                    buttonColor: Colors.green[100]!,
+                    onTap: () => _changeWaveColor(Colors.green[100]!),
+                  ),
+                  const SizedBox(width: 8),
+                  ColorChangeButton(
+                    buttonColor: Colors.pink[100]!,
+                    onTap: () => _changeWaveColor(Colors.pink[100]!),
+                  ),
+                  const SizedBox(width: 8),
+                  ColorChangeButton(
+                    buttonColor: Colors.lightBlue[100]!,
+                    onTap: () => _changeWaveColor(Colors.lightBlue[100]!),
+                  ),
+                  const SizedBox(width: 8),
+                  ColorChangeButton(
+                    buttonColor: Colors.orange[100]!,
+                    onTap: () => _changeWaveColor(Colors.orange[100]!),
+                  ),
+                  const SizedBox(width: 8),
+                  ColorChangeButton(
+                    buttonColor: Colors.purpleAccent[100]!,
+                    onTap: () => _changeWaveColor(Colors.purpleAccent[100]!),
+                  ),
+                  const SizedBox(width: 8),
+                  ColorChangeButton(
+                    buttonColor: Colors.yellow[100]!,
+                    onTap: () => _changeWaveColor(Colors.yellow[100]!),
+                  ),
+                ]),
+                const SizedBox(height: 8)
+              ],
+            ),
           ),
         ],
       ),
+//      floatingActionButton:
     );
+  }
+
+  void _changeWaveColor(Color color) {
+    setState(() {
+      _waveColor = color;
+    });
   }
 
   void _changeColor(FlowerColorScheme flowerColorScheme) {

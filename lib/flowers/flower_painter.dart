@@ -10,12 +10,14 @@ class FlowerPainter extends CustomPainter {
   FlowerPainter({
     required this.progress,
     required this.flowers,
+    required this.waveColor,
   });
 
   /// a value between 0.0 and 1.0 indicating the total progress of the animation. It comes from
   /// the animation controller in the calling widget
   final double progress;
   final List<Flower> flowers;
+  final Color waveColor;
 
   final _paint = Paint();
   Path petalsPath = Path();
@@ -30,32 +32,44 @@ class FlowerPainter extends CustomPainter {
   }
 
   void _drawWaves({required Canvas canvas, required Size size}) {
-    int numCols = 20;
+    int numCols = 16;
     final width = size.width;
-    final colWidth = width / numCols;
-    int numRows = (size.height / colWidth).ceil();
-    double dy = 0.0;
+    final colWidth = .8 * width / numCols;
+    numCols = numCols + 5;
+    int numRows = (size.height / colWidth).ceil() * 3 + 1;
+    final r0 = 2 * colWidth / 32;
+    final r1 = 6 * colWidth / 32;
+    final r2 = 10 * colWidth / 32;
+    final r3 = 14 * colWidth / 32;
+    final r4 = 35 * colWidth / 64;
+    final refStartAngle = -pi / 6;
+    final refSweepAngle = -2 * pi / 3;
+
+    double dy;
+    double dx;
     for (int j = 0; j < numRows; j++) {
       for (int i = 0; i < numCols + 1; i++) {
-        double dx;
         if (j % 2 == 0) {
           dx = i * colWidth + colWidth / 2;
         } else {
           dx = i * colWidth;
         }
-        dy = colWidth * j;
-        _paint.style = PaintingStyle.fill;
-        _paint.color = Colors.yellow[100]!;
-        canvas.drawCircle(Offset(dx, dy), 20, _paint);
+        dy = colWidth * j / 3;
 
+        _paint.color = waveColor;
         _paint.style = PaintingStyle.stroke;
-        _paint.strokeWidth = 2;
-        _paint.color = Colors.black54;
-        canvas.drawCircle(Offset(dx, dy), 20, _paint);
-        // canvas.drawCircle(Offset(dx, dy), 16, _paint);
-        canvas.drawCircle(Offset(dx, dy), 12, _paint);
-        //canvas.drawCircle(Offset(dx, dy), 8, _paint);
-        canvas.drawCircle(Offset(dx, dy), 4, _paint);
+        _paint.strokeWidth = 1;
+
+        canvas.drawArc(Rect.fromCircle(center: Offset(dx, dy), radius: r0), refStartAngle + 3 * pi / 16,
+            refSweepAngle - 3 * pi / 8, false, _paint);
+        canvas.drawArc(
+            Rect.fromCircle(center: Offset(dx, dy), radius: r1), refStartAngle, refSweepAngle, false, _paint);
+        canvas.drawArc(Rect.fromCircle(center: Offset(dx, dy), radius: r2), refStartAngle - pi / 128,
+            refSweepAngle + pi / 64, false, _paint);
+        canvas.drawArc(Rect.fromCircle(center: Offset(dx, dy), radius: r3), refStartAngle + pi / 64,
+            refSweepAngle - pi / 32, false, _paint);
+        canvas.drawArc(Rect.fromCircle(center: Offset(dx, dy), radius: r4), refStartAngle + pi / 32,
+            refSweepAngle - pi / 16, false, _paint);
       }
     }
   }
