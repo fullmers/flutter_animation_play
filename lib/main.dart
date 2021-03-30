@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'fibonacci/fibonacci_spiral.dart';
 import 'flowers/still_flowers.dart';
+import 'tiles/tiles.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -74,6 +75,24 @@ class MyApp extends StatelessWidget {
                     title: 'Flowers',
                     width: width,
                     height: height,
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
+            child: Text('Tiles'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return Tiles(
+                    title: 'Tiles',
                   );
                 },
               ),
