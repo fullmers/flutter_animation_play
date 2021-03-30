@@ -17,19 +17,23 @@ class FlowerPainter extends CustomPainter {
   /// a value between 0.0 and 1.0 indicating the total progress of the animation. It comes from
   /// the animation controller in the calling widget
   final double progress;
-  final List<Flower> flowers;
-  final FlowerColorScheme colorScheme;
 
   /// number of petals on the given flower. can range from 4-10.
   final int numPetals;
 
+  /// the flowers to be painted
+  final List<Flower> flowers;
+
+  /// the color scheme of the flowers
+  final FlowerColorScheme colorScheme;
+
   final _paint = Paint();
-  Path bigFlowerPath = Path();
-  Path mediumFlowerPath = Path();
-  Path smallFlowerPath = Path();
-  Path bigFlowerStamp = Path();
-  Path mediumFlowerStamp = Path();
-  Path smallFlowerStamp = Path();
+  final _bigFlowerPath = Path();
+  final _mediumFlowerPath = Path();
+  final _smallFlowerPath = Path();
+  final _bigFlowerStamp = Path();
+  final _mediumFlowerStamp = Path();
+  final _smallFlowerStamp = Path();
 
   // it appears that paint is called in desktop every time the mouse moves over a new widget, or in and out of the
   // program screen
@@ -37,13 +41,13 @@ class FlowerPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     _createFlowerStamps(canvas);
     _createFlowerPaths(canvas);
-    _drawFlowers(canvas: canvas, flowers: flowers);
+    _drawFlowers(canvas);
   }
 
   void _createFlowerStamps(Canvas canvas) {
-    bigFlowerStamp = _createFlowerStamp(canvas, FlowerType.BigSakura);
-    mediumFlowerStamp = _createFlowerStamp(canvas, FlowerType.MediumSakura);
-    smallFlowerStamp = _createFlowerStamp(canvas, FlowerType.SmallSakura);
+    _bigFlowerStamp.extendWithPath(_createFlowerStamp(canvas, FlowerType.BigSakura), Offset.zero);
+    _mediumFlowerStamp.extendWithPath(_createFlowerStamp(canvas, FlowerType.MediumSakura), Offset.zero);
+    _smallFlowerStamp.extendWithPath(_createFlowerStamp(canvas, FlowerType.SmallSakura), Offset.zero);
   }
 
   void _createFlowerPaths(Canvas canvas) {
@@ -76,40 +80,38 @@ class FlowerPainter extends CustomPainter {
           (innerRadius + ctrlPtHeight) * sin(theta + innerWidthSweep + outerWidthDelta));
       path.cubicTo(pt1.dx, pt1.dy, pt2.dx, pt2.dy, endPt.dx, endPt.dy);
 
+      final innerLinesPath = Path();
       final midTheta = theta + innerWidthSweep / 2;
       final midLineLength = ctrlPtHeight / 4;
-      final tempPath = Path();
-
       final innerMidPt = Offset(innerRadius * cos(midTheta), innerRadius * sin(midTheta));
       final outerMidPt =
           Offset((innerRadius + midLineLength / 2) * cos(midTheta), (innerRadius + midLineLength / 2) * sin(midTheta));
-      tempPath.moveTo(innerMidPt.dx, innerMidPt.dy);
-      tempPath.lineTo(outerMidPt.dx, outerMidPt.dy);
-      path.addPath(tempPath, innerMidPt);
+      innerLinesPath.moveTo(innerMidPt.dx, innerMidPt.dy);
+      innerLinesPath.lineTo(outerMidPt.dx, outerMidPt.dy);
+      path.addPath(innerLinesPath, innerMidPt);
       path.addOval(Rect.fromCircle(center: Offset.zero, radius: innerRadius));
     }
     return path;
   }
 
-  void _drawFlowers({
-    required Canvas canvas,
-    required List<Flower> flowers,
-  }) {
-    List<PathMetric> bigPathMetrics = bigFlowerPath.computeMetrics().toList(growable: true);
+  void _drawFlowers(
+    Canvas canvas,
+  ) {
+    List<PathMetric> bigPathMetrics = _bigFlowerPath.computeMetrics().toList(growable: true);
     final bigTheme = FlowerTheme(
       type: FlowerType.BigSakura,
       colorScheme: colorScheme,
     );
     _paintFlowers(canvas: canvas, pathMetrics: bigPathMetrics, flowerTheme: bigTheme);
 
-    List<PathMetric> mediumPathMetrics = mediumFlowerPath.computeMetrics().toList(growable: true);
+    List<PathMetric> mediumPathMetrics = _mediumFlowerPath.computeMetrics().toList(growable: true);
     final mediumTheme = FlowerTheme(
       type: FlowerType.MediumSakura,
       colorScheme: colorScheme,
     );
     _paintFlowers(canvas: canvas, pathMetrics: mediumPathMetrics, flowerTheme: mediumTheme);
 
-    List<PathMetric> smallPathMetrics = smallFlowerPath.computeMetrics().toList(growable: true);
+    List<PathMetric> smallPathMetrics = _smallFlowerPath.computeMetrics().toList(growable: true);
     final smallTheme = FlowerTheme(
       type: FlowerType.SmallSakura,
       colorScheme: colorScheme,
@@ -154,13 +156,13 @@ class FlowerPainter extends CustomPainter {
 
     switch (flower.flowerType) {
       case FlowerType.SmallSakura:
-        smallFlowerPath.addPath(smallFlowerStamp, Offset(newDx, newDy));
+        _smallFlowerPath.addPath(_smallFlowerStamp, Offset(newDx, newDy));
         break;
       case FlowerType.MediumSakura:
-        mediumFlowerPath.addPath(mediumFlowerStamp, Offset(newDx, newDy));
+        _mediumFlowerPath.addPath(_mediumFlowerStamp, Offset(newDx, newDy));
         break;
       case FlowerType.BigSakura:
-        bigFlowerPath.addPath(bigFlowerStamp, Offset(newDx, newDy));
+        _bigFlowerPath.addPath(_bigFlowerStamp, Offset(newDx, newDy));
         break;
     }
   }
