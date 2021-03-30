@@ -151,8 +151,8 @@ class FlowerPainter extends CustomPainter {
     } else if (flower.flowerType == FlowerType.BigSakura) {
       speedFactor = .6;
     }
-    final newDx = flower.seed.center.dx + progress * flower.seed.mX * travelDistance * speedFactor + 200;
-    final newDy = flower.seed.center.dy + progress * flower.seed.mY * travelDistance * speedFactor + 0;
+    final newDx = flower.seed.center.dx + progress * flower.seed.mX * travelDistance * speedFactor;
+    final newDy = flower.seed.center.dy + progress * flower.seed.mY * travelDistance * speedFactor;
 
     switch (flower.flowerType) {
       case FlowerType.SmallSakura:

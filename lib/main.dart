@@ -2,7 +2,7 @@ import 'package:animaplay/ptolemy/ptolemys_theorem.dart';
 import 'package:flutter/material.dart';
 
 import 'fibonacci/fibonacci_spiral.dart';
-import 'flowers/flowers.dart';
+import 'flowers/still_flowers.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return Flowers(
+                  return StillFlowers(
                     title: 'Flowers',
                     width: width,
                     height: height,

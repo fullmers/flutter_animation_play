@@ -141,11 +141,11 @@ class FlowerTheme {
         case FlowerColorScheme.Green:
           switch (type) {
             case FlowerType.BigSakura:
-              return Colors.lightGreenAccent[100]!;
+              return Colors.green[200]!;
             case FlowerType.MediumSakura:
-              return Colors.lightGreenAccent[400]!;
+              return Colors.green[400]!;
             case FlowerType.SmallSakura:
-              return Colors.lightGreenAccent[700]!;
+              return Colors.green[700]!;
           }
         case FlowerColorScheme.Pink:
           switch (type) {

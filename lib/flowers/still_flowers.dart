@@ -8,9 +8,9 @@ import 'controller_top.dart';
 import 'flower.dart';
 import 'flower_painter.dart';
 
-/// A page that shows some animated flowers
-class Flowers extends StatefulWidget {
-  const Flowers({
+/// A page that shows some randomly generated flowers as still images
+class StillFlowers extends StatefulWidget {
+  const StillFlowers({
     required this.title,
     required this.width,
     required this.height,
@@ -26,54 +26,29 @@ class Flowers extends StatefulWidget {
   final double height;
 
   @override
-  _FlowersState createState() => _FlowersState();
+  _StillFlowersState createState() => _StillFlowersState();
 }
 
 const int minNumPetals = 4;
 const int maxNumPetals = 10;
 
-class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
+class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderStateMixin {
   final _random = Random();
   final List<Flower> _flowers = [];
   final List<FlowerSeed> _seeds = [];
-  final int _numFlowers = 30;
-  final int _durationInMs = 8000;
+  final int _numFlowers = 24;
   late double _openControlBarHeight = 200;
   late double _minControlBarHeight = 56;
   final double _toolBarHeight = 50;
   Color _waveColor = Colors.green[100]!;
 
   int _numPetals = 5;
-  bool _isPlaying = false;
   bool _isControllerOpen = true;
   FlowerColorScheme _currentColorScheme = FlowerColorScheme.Green;
-
-  // beginning and end fields of Tween not needed, since the duration field in the controller provides this
-  static final _animation = Tween<double>();
 
   @override
   void initState() {
     super.initState();
-    print('width: ${widget.width} height: ${widget.width}');
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: _durationInMs),
-    );
-    _animation.animate(_controller)
-      ..addListener(() {
-        setState(() {});
-      })
-      ..addStatusListener((status) {
-        if (_controller.status == AnimationStatus.completed) {
-          _controller.reverse();
-        }
-        if (_controller.status == AnimationStatus.dismissed) {
-          _controller.forward();
-        }
-      });
-
     _createSeeds();
     _createFlowers();
   }
@@ -124,7 +99,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _controller.dispose();
+    //  _controller.dispose();
     super.dispose();
   }
 
@@ -133,7 +108,6 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        shadowColor: Colors.green,
         elevation: 0,
         toolbarHeight: _toolBarHeight,
       ),
@@ -141,7 +115,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
         children: [
           CustomPaint(
             foregroundPainter: FlowerPainter(
-              progress: _controller.value,
+              progress: 0,
               flowers: _flowers,
               colorScheme: _currentColorScheme,
               numPetals: _numPetals,
@@ -162,8 +136,6 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
                       ControllerTop(
                         minHeight: _minControlBarHeight,
                         openHeight: _openControlBarHeight,
-                        //   isPlaying: _isPlaying,
-                        //  playOrPause: _playOrPause,
                         reset: _reset,
                         isControllerOpen: _isControllerOpen,
                         openOrCloseController: _openOrClose,
@@ -273,8 +245,6 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
               : ControllerTop(
                   openHeight: _openControlBarHeight,
                   minHeight: _minControlBarHeight,
-                  //     isPlaying: _isPlaying,
-                  //    playOrPause: _playOrPause,
                   reset: _reset,
                   isControllerOpen: _isControllerOpen,
                   openOrCloseController: _openOrClose,
@@ -302,18 +272,6 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
       _createFlowers();
     });
   }
-
-  /* void _playOrPause() {
-    setState(() {
-      if (_isPlaying == false) {
-        _controller.forward();
-        _isPlaying = true;
-      } else {
-        _controller.stop();
-        _isPlaying = false;
-      }
-    });
-  }*/
 
   void _reset() {
     setState(() {

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../animation_controller_buttons.dart';
-
 class ControllerTop extends StatelessWidget {
   final double openHeight;
   final double minHeight;
-  final bool isPlaying;
-  final Function() playOrPause;
   final Function() reset;
   final bool isControllerOpen;
   final Function() openOrCloseController;
@@ -14,8 +10,6 @@ class ControllerTop extends StatelessWidget {
   const ControllerTop({
     required this.openHeight,
     required this.minHeight,
-    required this.isPlaying,
-    required this.playOrPause,
     required this.reset,
     required this.isControllerOpen,
     required this.openOrCloseController,
@@ -26,13 +20,18 @@ class ControllerTop extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.only(right: 6),
+        padding: const EdgeInsets.only(
+          right: 6,
+          left: 30,
+        ),
         child: Row(
           children: [
-            AnimationControllerButtons(
-              isPlaying: isPlaying,
-              onPressPlayPause: playOrPause,
-              onPressReset: reset,
+            Semantics(
+              label: 'Reset',
+              child: ElevatedButton(
+                onPressed: reset,
+                child: Icon(Icons.replay),
+              ),
             ),
             Flexible(
                 flex: 1,
