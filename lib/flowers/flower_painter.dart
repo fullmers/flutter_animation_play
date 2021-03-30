@@ -30,7 +30,6 @@ class FlowerPainter extends CustomPainter {
   Path bigFlowerStamp = Path();
   Path mediumFlowerStamp = Path();
   Path smallFlowerStamp = Path();
-  //int _numPetals = 5;
 
   // it appears that paint is called in desktop every time the mouse moves over a new widget, or in and out of the
   // program screen
