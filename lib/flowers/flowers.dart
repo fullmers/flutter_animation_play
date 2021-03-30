@@ -56,6 +56,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    print('width: ${widget.width} height: ${widget.width}');
     _controller = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: _durationInMs),
@@ -103,8 +104,6 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
       Flower flower = Flower(
         flowerType: _getFlowerType(i),
         seed: _seeds[i],
-        flowerColorScheme: _currentColorScheme,
-        numPetals: _numPetals,
       );
       _flowers.add(flower);
     }
@@ -144,7 +143,8 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
             foregroundPainter: FlowerPainter(
               progress: _controller.value,
               flowers: _flowers,
-              waveColor: _waveColor,
+              colorScheme: _currentColorScheme,
+              numPetals: _numPetals,
             ),
             painter: WavePainter(waveColor: _waveColor),
             child: Container(
@@ -320,6 +320,7 @@ class _FlowersState extends State<Flowers> with SingleTickerProviderStateMixin {
       _seeds.clear();
       _createSeeds();
       _createFlowers();
+      print('numFlowers: ${_seeds.length}');
     });
   }
 }

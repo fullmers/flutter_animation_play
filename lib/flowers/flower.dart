@@ -39,45 +39,12 @@ class Flower {
   /// as inner radius and petal height
   final FlowerType flowerType;
 
-  /// the color scheme of the given flower, used to determine petal fill and stroke color, depending on the [flowerType]
-  final FlowerColorScheme flowerColorScheme;
-
-  /// number of petals on the given flower. can range from 4-10.
-  final int numPetals;
-
   const Flower({
     required this.seed,
     required this.flowerType,
-    required this.flowerColorScheme,
-    required this.numPetals,
   });
 
-  Flower copyWith({
-    double? vx,
-    double? vy,
-    Offset? center,
-    FlowerSeed? seed,
-    FlowerType? flowerType,
-    FlowerColorScheme? flowerColorScheme,
-    int? numPetals,
-  }) {
-    return (Flower(
-      seed: seed ?? this.seed,
-      flowerType: flowerType ?? this.flowerType,
-      flowerColorScheme: flowerColorScheme ?? this.flowerColorScheme,
-      numPetals: numPetals ?? this.numPetals,
-    ));
-  }
-
-  /// used the calculate the end control points for the bezier curve defining the flower petals
-  double get innerWidthSweep => 2 * pi / numPetals;
-
-  /// used to calculate the inner control points for the bezier curve defining the flower petals
-  double get outerWidthDelta => pi / (numPetals * 8);
-
   /// how big the inner part of the flower is. Depends on the [flowerType]
-  double get innerRadius => getInnerRadius(flowerType);
-
   static double getInnerRadius(FlowerType flowerType) {
     switch (flowerType) {
       case FlowerType.BigSakura:
@@ -90,8 +57,6 @@ class Flower {
   }
 
   /// the bezier control point height used to calculate the petal curve. It is determined by the [flowerType]
-  double get ctrlPtHeight => getCtrlPtHeight(flowerType);
-
   static double getCtrlPtHeight(FlowerType flowerType) {
     switch (flowerType) {
       case FlowerType.BigSakura:
@@ -103,86 +68,9 @@ class Flower {
     }
   }
 
-  /// the color that outlines the flower petals. it is a function of the [flowerColorScheme]
-  Color get flowerStrokeColor {
-    switch (flowerColorScheme) {
-      case FlowerColorScheme.Orange:
-        return Colors.orange[100]!;
-      case FlowerColorScheme.Blue:
-        return Colors.lightBlue[100]!;
-      case FlowerColorScheme.Green:
-        return Colors.green[100]!;
-      case FlowerColorScheme.Pink:
-        return Colors.pink[100]!;
-      case FlowerColorScheme.Purple:
-        return Colors.deepPurple[100]!;
-      case FlowerColorScheme.Yellow:
-        return Colors.yellow[600]!;
-    }
-  }
+  static double getInnerSweep(int numPetals) => 2 * pi / numPetals;
 
-  /// the color for the inside of the flower petals. it is a function of the [flowerType] and [flowerColorScheme]
-  Color get petalFillColor {
-    final bigColorIndex = 200;
-    final mediumColorIndex = 500;
-    final smallColorIndex = 800;
-    switch (flowerColorScheme) {
-      case FlowerColorScheme.Orange:
-        switch (flowerType) {
-          case FlowerType.BigSakura:
-            return Colors.orange[bigColorIndex]!;
-          case FlowerType.MediumSakura:
-            return Colors.orange[mediumColorIndex]!;
-          case FlowerType.SmallSakura:
-            return Colors.orange[smallColorIndex]!;
-        }
-      case FlowerColorScheme.Blue:
-        switch (flowerType) {
-          case FlowerType.BigSakura:
-            return Colors.lightBlue[bigColorIndex]!;
-          case FlowerType.MediumSakura:
-            return Colors.lightBlue[mediumColorIndex]!;
-          case FlowerType.SmallSakura:
-            return Colors.lightBlue[smallColorIndex]!;
-        }
-      case FlowerColorScheme.Green:
-        switch (flowerType) {
-          case FlowerType.BigSakura:
-            return Colors.green[bigColorIndex]!;
-          case FlowerType.MediumSakura:
-            return Colors.green[mediumColorIndex]!;
-          case FlowerType.SmallSakura:
-            return Colors.green[smallColorIndex]!;
-        }
-      case FlowerColorScheme.Pink:
-        switch (flowerType) {
-          case FlowerType.BigSakura:
-            return Colors.pink[bigColorIndex]!;
-          case FlowerType.MediumSakura:
-            return Colors.pink[mediumColorIndex]!;
-          case FlowerType.SmallSakura:
-            return Colors.pink[smallColorIndex]!;
-        }
-      case FlowerColorScheme.Purple:
-        switch (flowerType) {
-          case FlowerType.BigSakura:
-            return Colors.deepPurple[bigColorIndex]!;
-          case FlowerType.MediumSakura:
-            return Colors.deepPurple[mediumColorIndex]!;
-          case FlowerType.SmallSakura:
-            return Colors.deepPurple[smallColorIndex]!;
-        }
-      case FlowerColorScheme.Yellow:
-        switch (flowerType) {
-          case FlowerType.BigSakura:
-            return Colors.yellow[300]!;
-          case FlowerType.MediumSakura:
-            return Colors.yellow[500]!;
-          case FlowerType.SmallSakura:
-            return Colors.yellow[700]!;
-        }
-    }
-  }
+  static double outerWidthDelta(int numPetals) => pi / (numPetals * 8);
 }
 
 /// [FlowerType] is used to determine the shape of the flower (size and petal shape)
@@ -201,4 +89,92 @@ enum FlowerColorScheme {
   Pink,
   Purple,
   Yellow,
+}
+
+class FlowerTheme {
+  final FlowerType type;
+  final FlowerColorScheme colorScheme;
+
+  FlowerTheme({
+    required this.type,
+    required this.colorScheme,
+  });
+
+  Color get flowerStrokeColor {
+    switch (colorScheme) {
+      case FlowerColorScheme.Orange:
+        return Colors.orange[100]!;
+      case FlowerColorScheme.Blue:
+        return Colors.lightBlue[50]!;
+      case FlowerColorScheme.Green:
+        return Colors.lightGreen[50]!;
+      case FlowerColorScheme.Pink:
+        return Colors.pink[50]!;
+      case FlowerColorScheme.Purple:
+        return Colors.deepPurpleAccent[100]!;
+      case FlowerColorScheme.Yellow:
+        return Colors.yellow[600]!;
+    }
+  }
+
+  Color get petalFillColor {
+    {
+      switch (colorScheme) {
+        case FlowerColorScheme.Orange:
+          switch (type) {
+            case FlowerType.BigSakura:
+              return Colors.orange[200]!;
+            case FlowerType.MediumSakura:
+              return Colors.orange[400]!;
+            case FlowerType.SmallSakura:
+              return Colors.orange[700]!;
+          }
+        case FlowerColorScheme.Blue:
+          switch (type) {
+            case FlowerType.BigSakura:
+              return Colors.lightBlue[100]!;
+            case FlowerType.MediumSakura:
+              return Colors.lightBlue[300]!;
+            case FlowerType.SmallSakura:
+              return Colors.lightBlue[700]!;
+          }
+        case FlowerColorScheme.Green:
+          switch (type) {
+            case FlowerType.BigSakura:
+              return Colors.lightGreenAccent[100]!;
+            case FlowerType.MediumSakura:
+              return Colors.lightGreenAccent[400]!;
+            case FlowerType.SmallSakura:
+              return Colors.lightGreenAccent[700]!;
+          }
+        case FlowerColorScheme.Pink:
+          switch (type) {
+            case FlowerType.BigSakura:
+              return Colors.pink[100]!;
+            case FlowerType.MediumSakura:
+              return Colors.pink[200]!;
+            case FlowerType.SmallSakura:
+              return Colors.pink[300]!;
+          }
+        case FlowerColorScheme.Purple:
+          switch (type) {
+            case FlowerType.BigSakura:
+              return Colors.deepPurple[100]!;
+            case FlowerType.MediumSakura:
+              return Colors.deepPurple[300]!;
+            case FlowerType.SmallSakura:
+              return Colors.deepPurple[700]!;
+          }
+        case FlowerColorScheme.Yellow:
+          switch (type) {
+            case FlowerType.BigSakura:
+              return Colors.yellow[100]!;
+            case FlowerType.MediumSakura:
+              return Colors.yellow[300]!;
+            case FlowerType.SmallSakura:
+              return Colors.yellow[500]!;
+          }
+      }
+    }
+  }
 }
