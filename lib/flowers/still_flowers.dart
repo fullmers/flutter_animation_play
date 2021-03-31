@@ -37,7 +37,7 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
   final List<Flower> _flowers = [];
   final List<FlowerSeed> _seeds = [];
   final int _numFlowers = 24;
-  late double _openControlBarHeight = 200;
+  late double _openControlBarHeight = 240;
   late double _minControlBarHeight = 56;
   final double _toolBarHeight = 50;
   Color _waveColor = Colors.green[100]!;
@@ -123,13 +123,14 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
             painter: WavePainter(waveColor: _waveColor),
             child: Container(
               height: _isControllerOpen
-                  ? MediaQuery.of(context).size.height - (_toolBarHeight + _openControlBarHeight + 16)
+                  ? MediaQuery.of(context).size.height - (_toolBarHeight + _openControlBarHeight + 24)
                   : MediaQuery.of(context).size.height - (_toolBarHeight + _minControlBarHeight + 24),
             ),
           ),
           _isControllerOpen
               ? Container(
                   color: Colors.white,
+                  height: _openControlBarHeight,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -140,7 +141,7 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
                         isControllerOpen: _isControllerOpen,
                         openOrCloseController: _openOrClose,
                       ),
-                      const SizedBox(height: 8),
+                      //   const SizedBox(height: 8),
                       Row(children: [
                         const SizedBox(width: 30),
                         Text('PETALS'),

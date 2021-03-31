@@ -1,8 +1,10 @@
 import 'package:animaplay/ptolemy/ptolemys_theorem.dart';
 import 'package:flutter/material.dart';
 
+import 'examples_for_presentation/examples.dart';
 import 'fibonacci/fibonacci_spiral.dart';
 import 'flowers/still_flowers.dart';
+import 'lines/lines.dart';
 import 'plaid/plaid_tiles.dart';
 import 'tiles/tiles.dart';
 
@@ -112,6 +114,42 @@ class MyApp extends StatelessWidget {
                 builder: (context) {
                   return Plaid(
                     title: 'Plaid',
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
+            child: Text('Examples'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return Examples(
+                    title: 'Examples',
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
+            child: Text('Lines'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return Lines(
+                    title: 'Lines',
                   );
                 },
               ),

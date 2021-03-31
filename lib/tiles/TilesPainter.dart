@@ -64,18 +64,18 @@ class TilesPainter extends CustomPainter {
 
   void _drawColorCircle(Offset center) {
     _paint.style = PaintingStyle.fill;
-    _paint.color = palette[_random.nextInt(numColors)].withOpacity(.3);
+    _paint.color = palette[_random.nextInt(numColors)].withOpacity(.2);
 
     final bigR = r * _random.nextDouble() * 3;
     final r2 = bigR * _random.nextDouble();
     final r3 = bigR * _random.nextDouble();
     final mediumR = r2 > r3 ? r2 : r3;
     final smallR = mediumR == r2 ? r3 : r2;
-    _canvas!.drawCircle(Offset(center.dx, center.dy), bigR * _random.nextDouble(), _paint);
-    _paint.color = palette[_random.nextInt(numColors)].withOpacity(.5);
-    _canvas!.drawCircle(Offset(center.dx, center.dy), mediumR * _random.nextDouble(), _paint);
-    _paint.color = palette[_random.nextInt(numColors)].withOpacity(.7);
-    _canvas!.drawCircle(Offset(center.dx, center.dy), smallR * _random.nextDouble(), _paint);
+    _canvas!.drawCircle(Offset(center.dx, center.dy), bigR, _paint);
+    _paint.color = palette[_random.nextInt(numColors)].withOpacity(.4);
+    _canvas!.drawCircle(Offset(center.dx, center.dy), mediumR, _paint);
+    _paint.color = palette[_random.nextInt(numColors)].withOpacity(.6);
+    _canvas!.drawCircle(Offset(center.dx, center.dy), smallR, _paint);
   }
 
   void _drawColorSquares(Offset center) {
@@ -92,30 +92,6 @@ class TilesPainter extends CustomPainter {
     _canvas!.drawRect(Rect.fromCircle(center: center, radius: mediumR), _paint);
     _paint.color = palette[_random.nextInt(numColors)];
     _canvas!.drawRect(Rect.fromCircle(center: center, radius: smallR), _paint);
-  }
-
-  void _drawCenterParallelLines(Offset center) {
-    final upStart = Offset(center.dx, center.dy + r);
-    final upEnd = Offset(center.dx, center.dy - r);
-    final horizontalStart = Offset(center.dx - r, center.dy);
-    final horizontalEnd = Offset(center.dx + r, center.dy);
-    if (_random.nextBool()) {
-      _canvas!.drawLine(horizontalStart, horizontalEnd, _paint);
-    } else {
-      _canvas!.drawLine(upStart, upEnd, _paint);
-    }
-  }
-
-  void _drawDiagonalLines(Offset center) {
-    final upLft = Offset(center.dx - r, center.dy - r);
-    final bottomRt = Offset(center.dx + r, center.dy + r);
-    final upRt = Offset(center.dx + r, center.dy - r);
-    final bottomLft = Offset(center.dx - r, center.dy + r);
-    if (_random.nextBool()) {
-      _canvas!.drawLine(upLft, bottomRt, _paint);
-    } else {
-      _canvas!.drawLine(upRt, bottomLft, _paint);
-    }
   }
 
   void _drawCurvyLines(Offset center) {
@@ -164,6 +140,4 @@ final List<Color> palette = [
   Colors.blueAccent[100]!,
   Colors.orangeAccent,
   Colors.orangeAccent[700]!,
-//  Colors.yellow[300]!,
-//  Colors.yellow[500]!,
 ];
