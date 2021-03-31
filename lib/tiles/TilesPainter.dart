@@ -3,8 +3,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-/// [TilesPainter] animates a Fibonacci spiral and optionally paints the squares framing the spiral.
 class TilesPainter extends CustomPainter {
+  TilesPainter({
+    required this.hexGrid,
+    required this.squareGrid,
+    required this.useSquares,
+  });
+
+  final List<List<Offset>> hexGrid;
+  final List<List<Offset>> squareGrid;
+  final bool useSquares;
+
   final Random _random = Random();
   final Paint _paint = Paint();
   Canvas? _canvas;
@@ -13,40 +22,40 @@ class TilesPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     _canvas = canvas;
-    // _paint.style = PaintingStyle.stroke;
-    //_paint.strokeWidth = 2;
-    //_paint.strokeCap = StrokeCap.round;
+
     final width = size.width;
-    final height = size.height;
     final numCols = 5;
     final side = width / numCols;
-    final numRows = (height / side).ceil();
     r = side / 2;
 
-    for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numCols + 1; j++) {
-        // square grid:
-        // final x = side * j;
-        //final y = r + side * i;
-        //_drawCenterParallelLines(Offset(x, y));
-        //_drawDiagonalLines(Offset(x, y));
-        //_drawCurvyLines(Offset(x, y));
-
-        // hexagonal grid:
-        double x;
-        if (i % 2 == 0) {
-          x = r + side * j;
-        } else {
-          x = side * j;
+    // square grid:
+    if (useSquares) {
+      for (int i = 0; i < squareGrid.length; i++) {
+        for (int j = 0; j < squareGrid[0].length; j++) {
+          if (_random.nextBool()) {
+            if (_random.nextBool()) {
+              _drawColorCircle(squareGrid[i][j]);
+            }
+          } else {
+            if (_random.nextBool()) {
+              _drawColorSquares(squareGrid[i][j]);
+            }
+          }
         }
-        final y = r * i * sqrt(3);
-        if (_random.nextBool()) {
-          _drawColorCircle(Offset(x, y));
-        } else {
-          _drawColorSquares(Offset(x, y));
+      }
+    } else {
+      for (int i = 0; i < hexGrid.length; i++) {
+        for (int j = 0; j < hexGrid[0].length; j++) {
+          if (_random.nextBool()) {
+            if (_random.nextBool()) {
+              _drawColorCircle(hexGrid[i][j]);
+            }
+          } else {
+            if (_random.nextBool()) {
+              _drawColorSquares(hexGrid[i][j]);
+            }
+          }
         }
-
-        //  _drawCurvyLines(Offset(x, y));
       }
     }
 
@@ -57,16 +66,15 @@ class TilesPainter extends CustomPainter {
     _paint.style = PaintingStyle.fill;
     _paint.color = palette[_random.nextInt(numColors)].withOpacity(.3);
 
-    final bigR = r * _random.nextDouble() * 1.5;
+    final bigR = r * _random.nextDouble() * 3;
     final r2 = bigR * _random.nextDouble();
     final r3 = bigR * _random.nextDouble();
     final mediumR = r2 > r3 ? r2 : r3;
     final smallR = mediumR == r2 ? r3 : r2;
     _canvas!.drawCircle(Offset(center.dx, center.dy), bigR * _random.nextDouble(), _paint);
     _paint.color = palette[_random.nextInt(numColors)].withOpacity(.5);
-    ;
     _canvas!.drawCircle(Offset(center.dx, center.dy), mediumR * _random.nextDouble(), _paint);
-    _paint.color = palette[_random.nextInt(numColors)];
+    _paint.color = palette[_random.nextInt(numColors)].withOpacity(.7);
     _canvas!.drawCircle(Offset(center.dx, center.dy), smallR * _random.nextDouble(), _paint);
   }
 
@@ -150,15 +158,12 @@ final List<Color> palette = [
   Colors.redAccent[700]!,
   Colors.green[500]!,
   Colors.lightGreen[300]!,
-//  Colors.lime[800]!,
   Colors.deepPurpleAccent,
   Colors.deepPurple[200]!,
   Colors.blueAccent[200]!,
   Colors.blueAccent[100]!,
-  // Colors.blue[600]!,
   Colors.orangeAccent,
   Colors.orangeAccent[700]!,
 //  Colors.yellow[300]!,
 //  Colors.yellow[500]!,
-//  Colors.yellowAccent
 ];

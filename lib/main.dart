@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'fibonacci/fibonacci_spiral.dart';
 import 'flowers/still_flowers.dart';
+import 'plaid/plaid_tiles.dart';
 import 'tiles/tiles.dart';
 
 void main() {
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
     final height = MediaQuery.of(context).size.height;
     return Column(
       children: [
-        SizedBox(height: 20),
+        SizedBox(height: 80),
         ElevatedButton(
           child: Container(
             child: Text('Fibonacci Spiral'),
@@ -93,6 +94,24 @@ class MyApp extends StatelessWidget {
                 builder: (context) {
                   return Tiles(
                     title: 'Tiles',
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
+            child: Text('Plaid'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return Plaid(
+                    title: 'Plaid',
                   );
                 },
               ),

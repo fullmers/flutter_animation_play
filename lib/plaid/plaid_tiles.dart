@@ -1,11 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
-import 'TilesPainter.dart';
+import 'plaid_painter.dart';
 
-class Tiles extends StatefulWidget {
-  const Tiles({
+class Plaid extends StatefulWidget {
+  const Plaid({
     required this.title,
   });
 
@@ -13,13 +11,11 @@ class Tiles extends StatefulWidget {
   final String title;
 
   @override
-  _TilesState createState() => _TilesState();
+  _PlaidState createState() => _PlaidState();
 }
 
-class _TilesState extends State<Tiles> with SingleTickerProviderStateMixin {
+class _PlaidState extends State<Plaid> with SingleTickerProviderStateMixin {
   late List<List<Offset>> squareGrid = [];
-  late List<List<Offset>> hexGrid = [];
-
   @override
   void initState() {
     super.initState();
@@ -36,25 +32,11 @@ class _TilesState extends State<Tiles> with SingleTickerProviderStateMixin {
 
     for (int i = 0; i < numRows; i++) {
       squareGrid.add([]);
-      hexGrid.add([]);
       for (int j = 0; j < numCols + 1; j++) {
-        // square grid:
         final x = side * j;
         final y = r + side * i;
         final squareCenter = Offset(x, y);
-
-        // hexagonal grid:
-        double hexX;
-        if (i % 2 == 0) {
-          hexX = r + side * j;
-        } else {
-          hexX = side * j;
-        }
-        final hexY = r * i * sqrt(3);
-        final hexCenter = Offset(hexX, hexY);
-
         squareGrid[i].add(squareCenter);
-        hexGrid[i].add(hexCenter);
       }
     }
     super.didChangeDependencies();
@@ -67,19 +49,11 @@ class _TilesState extends State<Tiles> with SingleTickerProviderStateMixin {
         title: Text(widget.title),
       ),
       body: CustomPaint(
-        foregroundPainter: TilesPainter(
+        foregroundPainter: PlaidPainter(
           squareGrid: squareGrid,
-          hexGrid: hexGrid,
-          useSquares: false,
         ),
         child: Container(),
       ),
     );
-  }
-
-  void _reset() {
-    setState(() {
-//todo
-    });
   }
 }
