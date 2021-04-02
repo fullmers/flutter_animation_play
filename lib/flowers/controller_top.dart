@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 
 class ControllerTop extends StatelessWidget {
-  final double openHeight;
-  final double minHeight;
   final Function() reset;
   final bool isControllerOpen;
   final Function() openOrCloseController;
+  final bool? isPlaying;
+  final Function()? playOrPause;
 
   const ControllerTop({
-    required this.openHeight,
-    required this.minHeight,
     required this.reset,
     required this.isControllerOpen,
     required this.openOrCloseController,
+    this.isPlaying,
+    this.playOrPause,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
+      width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: const EdgeInsets.only(
           right: 6,
@@ -33,12 +34,18 @@ class ControllerTop extends StatelessWidget {
                 child: Icon(Icons.replay),
               ),
             ),
-            Flexible(
-                flex: 1,
-                child: Container(
-                  height: minHeight,
-                  color: Colors.white,
-                )),
+            const SizedBox(
+              width: 8,
+            ),
+            if (playOrPause != null && isPlaying != null)
+              Semantics(
+                label: 'Play or Pause',
+                child: ElevatedButton(
+                  onPressed: playOrPause,
+                  child: isPlaying! ? Icon(Icons.pause) : Icon(Icons.play_arrow),
+                ),
+              ),
+            Spacer(),
             InkWell(
               child: Container(
                   height: 30,

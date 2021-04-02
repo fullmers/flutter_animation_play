@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import 'examples_for_presentation/examples.dart';
 import 'fibonacci/fibonacci_spiral.dart';
+import 'flowers/floating_flowers.dart';
 import 'flowers/still_flowers.dart';
 import 'lines/lines.dart';
-import 'plaid/plaid_tiles.dart';
 import 'tiles/tiles.dart';
 
 void main() {
@@ -31,15 +31,15 @@ class MyApp extends StatelessWidget {
         SizedBox(height: 80),
         ElevatedButton(
           child: Container(
-            child: Text('Fibonacci Spiral'),
+            child: Text('Starter Example'),
           ),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return FibonacciSpiral(
-                    title: 'Fibonacci Spiral',
+                  return Examples(
+                    title: 'Starter Example',
                   );
                 },
               ),
@@ -49,35 +49,15 @@ class MyApp extends StatelessWidget {
         SizedBox(height: 20),
         ElevatedButton(
           child: Container(
-            child: Text('Ptolemy\'s Theorem'),
+            child: Text('Lines'),
           ),
           onPressed: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return PtolemysTheorem(
-                    title: 'Ptolemy',
-                  );
-                },
-              ),
-            );
-          },
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          child: Container(
-            child: Text('Flowers'),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return StillFlowers(
-                    title: 'Flowers',
-                    width: width,
-                    height: height,
+                  return Lines(
+                    title: 'Lines',
                   );
                 },
               ),
@@ -105,6 +85,83 @@ class MyApp extends StatelessWidget {
         SizedBox(height: 20),
         ElevatedButton(
           child: Container(
+            child: Text('Still Flowers'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return StillFlowers(
+                    title: 'Still Flowers',
+                    width: width,
+                    height: height,
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
+            child: Text('Floating Flowers'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return FloatingFlowers(
+                    title: 'Floating Flowers',
+                    width: width,
+                    height: height,
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
+            child: Text('Ptolemy\'s Theorem'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return PtolemysTheorem(
+                    title: 'Ptolemy',
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
+            child: Text('Fibonacci Spiral'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return FibonacciSpiral(
+                    title: 'Fibonacci Spiral',
+                  );
+                },
+              ),
+            );
+          },
+        ),
+
+        /*      SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
             child: Text('Plaid'),
           ),
           onPressed: () {
@@ -119,43 +176,7 @@ class MyApp extends StatelessWidget {
               ),
             );
           },
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          child: Container(
-            child: Text('Examples'),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return Examples(
-                    title: 'Examples',
-                  );
-                },
-              ),
-            );
-          },
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          child: Container(
-            child: Text('Lines'),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return Lines(
-                    title: 'Lines',
-                  );
-                },
-              ),
-            );
-          },
-        ),
+        ),*/
       ],
     );
   }

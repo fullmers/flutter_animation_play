@@ -135,8 +135,6 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ControllerTop(
-                        minHeight: _minControlBarHeight,
-                        openHeight: _openControlBarHeight,
                         reset: _reset,
                         isControllerOpen: _isControllerOpen,
                         openOrCloseController: _openOrClose,
@@ -244,8 +242,6 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
                   ),
                 )
               : ControllerTop(
-                  openHeight: _openControlBarHeight,
-                  minHeight: _minControlBarHeight,
                   reset: _reset,
                   isControllerOpen: _isControllerOpen,
                   openOrCloseController: _openOrClose,

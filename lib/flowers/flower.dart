@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 class FlowerSeed {
   final double mX;
   final double mY;
-  final Offset center;
+  Offset center = Offset.zero;
 
-  const FlowerSeed({
+  FlowerSeed({
     required this.center,
     required this.mX,
     required this.mY,
@@ -32,23 +32,37 @@ class FlowerSeed {
 /// [FlowerPainter].
 
 class Flower {
-  /// the [seed] contains the position and direction data of the flower. This should not change.
-  final FlowerSeed seed;
+  /// the [seed] contains the position and direction data of the flower.
+  FlowerSeed seed;
 
   /// The [flowerType] describes which kind of flower is being drawn. This is used to determine appearance variables such
   /// as inner radius and petal height
   final FlowerType flowerType;
 
-  const Flower({
+  Flower({
     required this.seed,
     required this.flowerType,
   });
+
+  Flower copyWith({
+    FlowerSeed? seed,
+    FlowerType? flowerType,
+  }) {
+    return Flower(
+      seed: seed ?? this.seed,
+      flowerType: flowerType ?? this.flowerType,
+    );
+  }
+
+  void moveFlower(double deltaX, double deltaY) {
+    seed.center = seed.center.translate(deltaX, deltaY);
+  }
 
   /// how big the inner part of the flower is. Depends on the [flowerType]
   static double getInnerRadius(FlowerType flowerType) {
     switch (flowerType) {
       case FlowerType.BigSakura:
-        return 10;
+        return 8;
       case FlowerType.MediumSakura:
         return 6;
       case FlowerType.SmallSakura:
@@ -60,9 +74,9 @@ class Flower {
   static double getCtrlPtHeight(FlowerType flowerType) {
     switch (flowerType) {
       case FlowerType.BigSakura:
-        return 120;
+        return 100;
       case FlowerType.MediumSakura:
-        return 80;
+        return 70;
       case FlowerType.SmallSakura:
         return 40;
     }
