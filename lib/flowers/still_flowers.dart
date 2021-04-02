@@ -36,7 +36,7 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
   final _random = Random();
   final List<Flower> _flowers = [];
   final List<FlowerSeed> _seeds = [];
-  final int _numFlowers = 24;
+  final int _numFlowers = 16;
   late double _openControlBarHeight = 240;
   late double _minControlBarHeight = 56;
   final double _toolBarHeight = 50;
@@ -215,8 +215,8 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
                         ),
                         const SizedBox(width: 8),
                         ColorChangeButton(
-                          buttonColor: Colors.redAccent[100]!,
-                          onTap: () => _changeWaveColor(Colors.redAccent[100]!),
+                          buttonColor: Colors.pink[100]!,
+                          onTap: () => _changeWaveColor(Colors.pink[100]!),
                         ),
                         const SizedBox(width: 8),
                         ColorChangeButton(
@@ -230,13 +230,13 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
                         ),
                         const SizedBox(width: 8),
                         ColorChangeButton(
-                          buttonColor: Colors.purpleAccent[100]!,
-                          onTap: () => _changeWaveColor(Colors.purpleAccent[100]!),
+                          buttonColor: Colors.deepPurple[100]!,
+                          onTap: () => _changeWaveColor(Colors.deepPurple[100]!),
                         ),
                         const SizedBox(width: 8),
                         ColorChangeButton(
-                          buttonColor: Colors.yellow[100]!,
-                          onTap: () => _changeWaveColor(Colors.yellow[100]!),
+                          buttonColor: Colors.amberAccent[100]!,
+                          onTap: () => _changeWaveColor(Colors.amberAccent[100]!),
                         ),
                       ]),
                       //    const SizedBox(height: 8)

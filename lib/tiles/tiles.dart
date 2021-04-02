@@ -72,14 +72,26 @@ class _TilesState extends State<Tiles> with SingleTickerProviderStateMixin {
           hexGrid: hexGrid,
           useSquares: false,
         ),
-        child: Container(),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          /* child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+               Semantics(
+                label: 'Reset',
+                child: ElevatedButton(
+                  onPressed: _reset,
+                  child: Icon(Icons.replay),
+                ),
+              ),
+            ]),*/
+        ),
       ),
     );
   }
 
-  void _reset() {
+  /* void _reset() {
     setState(() {
-//todo
+      // todo(me)
     });
-  }
+  }*/
 }

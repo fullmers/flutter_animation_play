@@ -23,18 +23,10 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
   /// the duration of the animation (that, is the time it takes to go around the given circle once).
   /// Milliseconds.
   final int _periodInMs = 7500;
-
   static final _animation = Tween<double>();
 
   late AnimationController _controller;
-  late double _radius;
-  late double _dotRadius;
-  late double _triangleSide;
-  late FixedPointsForPtolemy _fixedPoints;
-
   bool _isPlaying = false;
-
-  _PtolemysTheoremState();
 
   @override
   void initState() {
@@ -50,6 +42,11 @@ class _PtolemysTheoremState extends State<PtolemysTheorem> with SingleTickerProv
         setState(() {});
       });
   }
+
+  late double _radius;
+  late double _dotRadius;
+  late double _triangleSide;
+  late FixedPointsForPtolemy _fixedPoints;
 
   @override
   void didChangeDependencies() {
