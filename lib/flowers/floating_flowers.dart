@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:animaplay/flowers/controller_flower_colors.dart';
+import 'package:animaplay/flowers/controller_petal_number.dart';
 import 'package:animaplay/flowers/controller_wave_colors.dart';
 import 'package:animaplay/flowers/wave_painter.dart';
 import 'package:flutter/material.dart';
@@ -42,13 +44,15 @@ class _FloatingFlowersState extends State<FloatingFlowers> with SingleTickerProv
   final int _numFlowers = 18;
   final int _durationInMs = 5000;
   late double _openControlBarHeight = 200;
-  late double _minControlBarHeight = 56;
   final double _toolBarHeight = 50;
-  Color _waveColor = Colors.green[100]!;
 
+  // defaults when the page appears
+  Color _waveColor = Colors.green[100]!;
   int _numPetals = 5;
   bool _isPlaying = false;
   bool _isControllerOpen = true;
+  late int _extraPaddingOpen;
+  late int _extraPaddingClosed;
   FlowerColorScheme _currentColorScheme = FlowerColorScheme.Green;
 
   // beginning and end fields of Tween not needed, since the duration field in the controller provides this
@@ -85,6 +89,15 @@ class _FloatingFlowersState extends State<FloatingFlowers> with SingleTickerProv
 
     _createSeeds();
     _createFlowers();
+
+    // todo find a cleaner way to do this:
+    if (Platform.isAndroid) {
+      _extraPaddingOpen = 24;
+      _extraPaddingClosed = 24;
+    } else {
+      _extraPaddingOpen = 0;
+      _extraPaddingClosed = 0;
+    }
   }
 
   void _createSeeds() {
@@ -92,11 +105,13 @@ class _FloatingFlowersState extends State<FloatingFlowers> with SingleTickerProv
       final center = _makeRandomCenter();
       final mX = _random.nextDouble() * (_random.nextBool() ? 1 : -1);
       final mY = _random.nextDouble() * (_random.nextBool() ? 1 : -1);
-      _seeds.add(FlowerSeed(
-        center: center,
-        mX: mX,
-        mY: mY,
-      ));
+      _seeds.add(
+        FlowerSeed(
+          center: center,
+          mX: mX,
+          mY: mY,
+        ),
+      );
     }
   }
 
@@ -141,7 +156,6 @@ class _FloatingFlowersState extends State<FloatingFlowers> with SingleTickerProv
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        shadowColor: Colors.green,
         elevation: 0,
         toolbarHeight: _toolBarHeight,
       ),
@@ -154,8 +168,8 @@ class _FloatingFlowersState extends State<FloatingFlowers> with SingleTickerProv
                 painter: WavePainter(waveColor: _waveColor),
                 child: Container(
                   height: _isControllerOpen
-                      ? MediaQuery.of(context).size.height - (_toolBarHeight + 24)
-                      : MediaQuery.of(context).size.height - (_minControlBarHeight + 18),
+                      ? MediaQuery.of(context).size.height - (_toolBarHeight + _extraPaddingOpen)
+                      : MediaQuery.of(context).size.height - (_toolBarHeight + _extraPaddingClosed),
                 ),
               ),
               for (var flower in _flowers)
@@ -166,7 +180,10 @@ class _FloatingFlowersState extends State<FloatingFlowers> with SingleTickerProv
                     numPetals: _numPetals,
                   ),
                 ),
-              Positioned(bottom: 0, child: _buildController(context)),
+              Positioned(
+                bottom: 0,
+                child: _buildController(context),
+              ),
             ],
           ),
         ],
@@ -175,63 +192,56 @@ class _FloatingFlowersState extends State<FloatingFlowers> with SingleTickerProv
   }
 
   Widget _buildController(BuildContext context) {
-    return _isControllerOpen
-        ? Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ControllerTop(
-                    isPlaying: _isPlaying,
-                    playOrPause: _playOrPause,
-                    reset: _reset,
-                    isControllerOpen: _isControllerOpen,
-                    openOrCloseController: _openOrClose,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(children: [
-                    const SizedBox(width: 30),
-                    Text('PETALS'),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      child: Icon(Icons.add),
-                      onPressed: () => setState(() {
-                        if (_numPetals <= maxNumPetals) {
-                          _numPetals++;
-                          _createFlowers();
-                        }
-                      }),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      child: Icon(Icons.remove),
-                      onPressed: () => setState(() {
-                        if (_numPetals > minNumPetals) {
-                          _numPetals--;
-                          _createFlowers();
-                        }
-                      }),
-                    ),
-                  ]),
-                  const SizedBox(height: 8),
-                  ControllerFlowerColors(changeColor: _changeFlowerColor),
-                  const SizedBox(height: 8),
-                  ControllerWaveColors(changeWaveColor: _changeWaveColor),
-                  //    const SizedBox(height: 8)
-                ],
-              ),
-            ),
-          )
-        : ControllerTop(
-            isPlaying: _isPlaying,
-            playOrPause: _playOrPause,
-            reset: _reset,
-            isControllerOpen: _isControllerOpen,
-            openOrCloseController: _openOrClose,
-          );
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(30, 8, 0, 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ControllerTop(
+              isPlaying: _isPlaying,
+              playOrPause: _playOrPause,
+              reset: _reset,
+              isControllerOpen: _isControllerOpen,
+              openOrCloseController: _openOrClose,
+            )
+          ]..addAll(_isControllerOpen ? _openControllerBottom() : []),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _openControllerBottom() => [
+        const SizedBox(height: 8),
+        ControllerPetalNumber(
+          changePetalNumber: _changePetalNumber,
+        ),
+        const SizedBox(height: 8),
+        ControllerFlowerColors(
+          changeColor: _changeFlowerColor,
+        ),
+        const SizedBox(height: 8),
+        ControllerWaveColors(
+          changeWaveColor: _changeWaveColor,
+        )
+      ];
+
+  void _changePetalNumber(bool isIncreasing) {
+    setState(() {
+      if (isIncreasing) {
+        if (_numPetals <= maxNumPetals) {
+          _numPetals++;
+          _createFlowers();
+        }
+      } else {
+        if (_numPetals > minNumPetals) {
+          _numPetals--;
+          _createFlowers();
+        }
+      }
+    });
   }
 
   void _openOrClose() {

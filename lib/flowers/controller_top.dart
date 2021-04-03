@@ -18,14 +18,16 @@ class ControllerTop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
       width: MediaQuery.of(context).size.width,
       child: Padding(
-        padding: const EdgeInsets.only(
-          right: 6,
-          left: 30,
+        padding: const EdgeInsets.fromLTRB(
+          0,
+          0,
+          36,
+          0,
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Semantics(
               label: 'Reset',
@@ -51,7 +53,6 @@ class ControllerTop extends StatelessWidget {
                   height: 30,
                   width: 30,
                   child: isControllerOpen ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
-                  // alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(3)),
                     color: Colors.blueGrey[100],

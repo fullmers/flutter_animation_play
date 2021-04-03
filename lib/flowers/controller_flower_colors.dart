@@ -12,7 +12,6 @@ class ControllerFlowerColors extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const SizedBox(width: 30),
         Text('FLOWERS'),
         const SizedBox(width: 8),
         ColorChangeButton(
