@@ -1,10 +1,13 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:animaplay/flowers/wave_painter.dart';
 import 'package:flutter/material.dart';
 
-import 'color_change_button.dart';
+import 'controller_flower_colors.dart';
+import 'controller_petal_number.dart';
 import 'controller_top.dart';
+import 'controller_wave_colors.dart';
 import 'flower.dart';
 import 'flower_painter.dart';
 
@@ -32,31 +35,41 @@ class StillFlowers extends StatefulWidget {
 const int minNumPetals = 4;
 const int maxNumPetals = 10;
 
-class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderStateMixin {
+class _StillFlowersState extends State<StillFlowers> {
   final _random = Random();
   final List<Flower> _flowers = [];
   final List<FlowerSeed> _seeds = [];
   final int _numFlowers = 16;
   late double _openControlBarHeight = 240;
-  late double _minControlBarHeight = 56;
   final double _toolBarHeight = 50;
   Color _waveColor = Colors.green[100]!;
 
   int _numPetals = 5;
   bool _isControllerOpen = true;
   FlowerColorScheme _currentColorScheme = FlowerColorScheme.Green;
-
+  late double _extraPaddingOpen;
+  late double _extraPaddingClosed;
   @override
   void initState() {
     super.initState();
     _createSeeds();
     _createFlowers();
+
+    // todo find a cleaner way to do this:
+    if (Platform.isAndroid) {
+      _extraPaddingOpen = 24;
+      _extraPaddingClosed = 24;
+    } else {
+      _extraPaddingOpen = 0;
+      _extraPaddingClosed = 0;
+    }
+    _extraPaddingOpen = _extraPaddingOpen + _toolBarHeight;
+    _extraPaddingClosed = _extraPaddingClosed + _toolBarHeight;
   }
 
   void _createSeeds() {
     for (int i = 0; i < _numFlowers; i++) {
       final center = _makeRandomCenter();
-      //final center = _makeCenterPoint();
       final mX = _random.nextDouble() * (_random.nextBool() ? 1 : -1);
       final mY = _random.nextDouble() * (_random.nextBool() ? 1 : -1);
       _seeds.add(FlowerSeed(
@@ -69,7 +82,7 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
 
   Offset _makeRandomCenter() {
     double dx = _random.nextDouble() * widget.width;
-    double dy = _random.nextDouble() * widget.height + _toolBarHeight; //(widget.height - _toolBarHeight - 70);
+    double dy = _random.nextDouble() * widget.height - _openControlBarHeight;
     return Offset(dx, dy);
   }
 
@@ -98,12 +111,6 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
   }
 
   @override
-  void dispose() {
-    //  _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -112,144 +119,69 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
         toolbarHeight: _toolBarHeight,
       ),
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          CustomPaint(
-            foregroundPainter: FlowerPainter(
-              progress: 0,
-              flowers: _flowers,
-              colorScheme: _currentColorScheme,
-              numPetals: _numPetals,
-            ),
-            painter: WavePainter(waveColor: _waveColor),
-            child: Container(
-              height: _isControllerOpen
-                  ? MediaQuery.of(context).size.height - (_toolBarHeight + _openControlBarHeight + 24)
-                  : MediaQuery.of(context).size.height - (_toolBarHeight + _minControlBarHeight + 24),
-            ),
-          ),
-          _isControllerOpen
-              ? Container(
-                  color: Colors.white,
-                  height: _openControlBarHeight,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ControllerTop(
-                        reset: _reset,
-                        isControllerOpen: _isControllerOpen,
-                        openOrCloseController: _openOrClose,
-                      ),
-                      //   const SizedBox(height: 8),
-                      Row(children: [
-                        const SizedBox(width: 30),
-                        Text('PETALS'),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          child: Icon(Icons.add),
-                          onPressed: () => setState(() {
-                            if (_numPetals <= maxNumPetals) {
-                              _numPetals++;
-                              _createFlowers();
-                            }
-                          }),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          child: Icon(Icons.remove),
-                          onPressed: () => setState(() {
-                            if (_numPetals > minNumPetals) {
-                              _numPetals--;
-                              _createFlowers();
-                            }
-                          }),
-                        ),
-                      ]),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const SizedBox(width: 30),
-                          Text('FLOWERS'),
-                          const SizedBox(width: 8),
-                          ColorChangeButton(
-                            buttonColor: Colors.green,
-                            onTap: () => _changeColor(FlowerColorScheme.Green),
-                          ),
-                          const SizedBox(width: 8),
-                          ColorChangeButton(
-                            buttonColor: Colors.pink,
-                            onTap: () => _changeColor(FlowerColorScheme.Pink),
-                          ),
-                          const SizedBox(width: 8),
-                          ColorChangeButton(
-                            buttonColor: Colors.blue,
-                            onTap: () => _changeColor(FlowerColorScheme.Blue),
-                          ),
-                          const SizedBox(width: 8),
-                          ColorChangeButton(
-                            buttonColor: Colors.orange,
-                            onTap: () => _changeColor(FlowerColorScheme.Orange),
-                          ),
-                          const SizedBox(width: 8),
-                          ColorChangeButton(
-                            buttonColor: Colors.purple,
-                            onTap: () => _changeColor(FlowerColorScheme.Purple),
-                          ),
-                          const SizedBox(width: 8),
-                          ColorChangeButton(
-                            buttonColor: Colors.yellow,
-                            onTap: () => _changeColor(FlowerColorScheme.Yellow),
-                          ),
-                          const SizedBox(width: 8),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(children: [
-                        const SizedBox(width: 30),
-                        Text('WAVES'),
-                        const SizedBox(width: 8),
-                        ColorChangeButton(
-                          buttonColor: Colors.green[100]!,
-                          onTap: () => _changeWaveColor(Colors.green[100]!),
-                        ),
-                        const SizedBox(width: 8),
-                        ColorChangeButton(
-                          buttonColor: Colors.pink[100]!,
-                          onTap: () => _changeWaveColor(Colors.pink[100]!),
-                        ),
-                        const SizedBox(width: 8),
-                        ColorChangeButton(
-                          buttonColor: Colors.lightBlue[100]!,
-                          onTap: () => _changeWaveColor(Colors.lightBlue[100]!),
-                        ),
-                        const SizedBox(width: 8),
-                        ColorChangeButton(
-                          buttonColor: Colors.orange[100]!,
-                          onTap: () => _changeWaveColor(Colors.orange[100]!),
-                        ),
-                        const SizedBox(width: 8),
-                        ColorChangeButton(
-                          buttonColor: Colors.deepPurple[100]!,
-                          onTap: () => _changeWaveColor(Colors.deepPurple[100]!),
-                        ),
-                        const SizedBox(width: 8),
-                        ColorChangeButton(
-                          buttonColor: Colors.amberAccent[100]!,
-                          onTap: () => _changeWaveColor(Colors.amberAccent[100]!),
-                        ),
-                      ]),
-                      //    const SizedBox(height: 8)
-                    ],
-                  ),
-                )
-              : ControllerTop(
-                  reset: _reset,
-                  isControllerOpen: _isControllerOpen,
-                  openOrCloseController: _openOrClose,
+          Stack(
+            children: [
+              CustomPaint(
+                foregroundPainter: FlowerPainter(
+                  progress: 0,
+                  flowers: _flowers,
+                  colorScheme: _currentColorScheme,
+                  numPetals: _numPetals,
                 ),
+                painter: WavePainter(waveColor: _waveColor),
+                child: Container(
+                  height: _isControllerOpen
+                      ? MediaQuery.of(context).size.height - (_extraPaddingOpen)
+                      : MediaQuery.of(context).size.height - (_extraPaddingClosed),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: _buildController(),
+              ),
+            ],
+          )
         ],
       ),
     );
   }
+
+  Widget _buildController() {
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(30, 8, 0, 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ControllerTop(
+              reset: _reset,
+              isControllerOpen: _isControllerOpen,
+              openOrCloseController: _openOrClose,
+            )
+          ]..addAll(_isControllerOpen ? _openControllerBottom() : []),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _openControllerBottom() => [
+        const SizedBox(height: 8),
+        ControllerPetalNumber(
+          changePetalNumber: _changePetalNumber,
+        ),
+        const SizedBox(height: 8),
+        ControllerFlowerColors(
+          changeColor: _changeFlowerColor,
+        ),
+        const SizedBox(height: 8),
+        ControllerWaveColors(
+          changeWaveColor: _changeWaveColor,
+        )
+      ];
 
   void _openOrClose() {
     setState(() {
@@ -263,10 +195,26 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
     });
   }
 
-  void _changeColor(FlowerColorScheme flowerColorScheme) {
+  void _changeFlowerColor(FlowerColorScheme flowerColorScheme) {
     setState(() {
       _currentColorScheme = flowerColorScheme;
       _createFlowers();
+    });
+  }
+
+  void _changePetalNumber(bool isIncreasing) {
+    setState(() {
+      if (isIncreasing) {
+        if (_numPetals <= maxNumPetals) {
+          _numPetals++;
+          _createFlowers();
+        }
+      } else {
+        if (_numPetals > minNumPetals) {
+          _numPetals--;
+          _createFlowers();
+        }
+      }
     });
   }
 
@@ -275,7 +223,6 @@ class _StillFlowersState extends State<StillFlowers> with SingleTickerProviderSt
       _seeds.clear();
       _createSeeds();
       _createFlowers();
-      print('numFlowers: ${_seeds.length}');
     });
   }
 }
