@@ -94,35 +94,6 @@ class TilesPainter extends CustomPainter {
     _canvas!.drawRect(Rect.fromCircle(center: center, radius: smallR), _paint);
   }
 
-  void _drawCurvyLines(Offset center) {
-    final up = Offset(center.dx, center.dy - r);
-    final bottom = Offset(center.dx, center.dy + r);
-    final rt = Offset(center.dx + r, center.dy);
-    final lft = Offset(center.dx - r, center.dy);
-    Path path = Path();
-    Offset startPt1;
-    Offset endPt1;
-    Offset ctrlPt = center;
-    Offset startPt2;
-    Offset endPt2;
-    if (_random.nextBool()) {
-      startPt1 = up;
-      endPt1 = lft;
-      startPt2 = rt;
-      endPt2 = bottom;
-    } else {
-      startPt1 = up;
-      endPt1 = rt;
-      startPt2 = lft;
-      endPt2 = bottom;
-    }
-    path.moveTo(startPt1.dx, startPt1.dy);
-    path.quadraticBezierTo(ctrlPt.dx, ctrlPt.dy, endPt1.dx, endPt1.dy);
-    path.moveTo(startPt2.dx, startPt2.dy);
-    path.quadraticBezierTo(ctrlPt.dx, ctrlPt.dy, endPt2.dx, endPt2.dy);
-    _canvas!.drawPath(path, _paint);
-  }
-
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return false;
