@@ -16,7 +16,7 @@ class FibonacciCalcs {
   }
 
   static List<int> _calculateFibNumbers() {
-    final sequenceLength = 12;
+    final sequenceLength = 11;
     final fibNumbers = [1, 1];
     for (var i = 0; i < sequenceLength; i++) {
       final nextFib = fibNumbers[fibNumbers.length - 1] + fibNumbers[fibNumbers.length - 2];

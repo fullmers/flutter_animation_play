@@ -264,18 +264,17 @@ class _FloatingFlowersState extends State<FloatingFlowers> with SingleTickerProv
 
   void _playOrPause() {
     setState(() {
-      if (!_isPlaying == true) {
-        _controller.forward();
-        _isPlaying = true;
-      } else {
+      if (_isPlaying) {
         _controller.stop();
-        _isPlaying = false;
+      } else {
+        _controller.repeat();
       }
+      _isPlaying = !_isPlaying;
     });
   }
 
   void _updateFlowerPositions(bool isForward) {
-    final scaleFactor = 1000;
+    final scaleFactor = 3500;
     int i = 0;
     for (var flower in _flowers) {
       final dx = scaleFactor * flower.seed.mX / _durationInMs;

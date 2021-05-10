@@ -1,12 +1,10 @@
 import 'package:animaplay/ptolemy/ptolemys_theorem.dart';
+import 'package:animaplay/tiles/tiles.dart';
 import 'package:flutter/material.dart';
 
-import 'examples_for_presentation/examples.dart';
 import 'fibonacci/fibonacci_spiral.dart';
 import 'flowers/floating_flowers.dart';
-import 'flowers/still_flowers.dart';
 import 'lines/lines.dart';
-import 'tiles/tiles.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -29,24 +27,6 @@ class MyApp extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: 80),
-        ElevatedButton(
-          child: Container(
-            child: Text('Starter Example'),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return Examples(
-                    title: 'Starter Example',
-                  );
-                },
-              ),
-            );
-          },
-        ),
-        SizedBox(height: 20),
         ElevatedButton(
           child: Container(
             child: Text('Lines'),
@@ -76,26 +56,6 @@ class MyApp extends StatelessWidget {
                 builder: (context) {
                   return Tiles(
                     title: 'Tiles',
-                  );
-                },
-              ),
-            );
-          },
-        ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          child: Container(
-            child: Text('Still Flowers'),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return StillFlowers(
-                    title: 'Still Flowers',
-                    width: width,
-                    height: height,
                   );
                 },
               ),
@@ -158,25 +118,6 @@ class MyApp extends StatelessWidget {
             );
           },
         ),
-
-        /*      SizedBox(height: 20),
-        ElevatedButton(
-          child: Container(
-            child: Text('Plaid'),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return Plaid(
-                    title: 'Plaid',
-                  );
-                },
-              ),
-            );
-          },
-        ),*/
       ],
     );
   }

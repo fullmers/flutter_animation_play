@@ -21,7 +21,7 @@ class FibonacciSpiral extends StatefulWidget {
 class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProviderStateMixin {
   /// the duration of the animation (that, is the time it takes to draw the spiral).
   /// Milliseconds.
-  final int _durationInMs = 8000;
+  final int _durationInMs = 15000;
 
   final List<FibonacciSquare> _fibSquares = [];
   final _fibCalcs = FibonacciCalcs();
@@ -50,8 +50,8 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final center = Offset(
-      width / 2,
-      height / 2,
+      width / 2 - 40,
+      height / 2 + 100,
     );
     _fibSquares.clear();
     _fibSquares.addAll(_fibCalcs.buildFibSquares(center));
