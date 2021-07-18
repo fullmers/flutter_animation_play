@@ -3,13 +3,16 @@ import 'package:animaplay/tiles/tiles.dart';
 import 'package:flutter/material.dart';
 
 import 'fibonacci/fibonacci_spiral.dart';
+import 'fireworks/fireworks.dart';
 import 'flowers/floating_flowers.dart';
 import 'lines/lines.dart';
 
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: MyApp(),
+    home: Fireworks(
+      title: 'Fireworks',
+    ),
     title: 'Play with animations',
     theme: ThemeData(
       primarySwatch: Colors.blueGrey,
