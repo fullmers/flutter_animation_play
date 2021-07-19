@@ -1,7 +1,5 @@
-import 'dart:ui' as ui;
-
-import 'package:animaplay/fireworks/firework.dart';
 import 'package:flutter/material.dart';
+import 'package:generative_art/fireworks/firework.dart';
 
 /// [FireworksPainter] animates exploding fireworks.
 class FireworksPainter extends CustomPainter {
@@ -40,7 +38,20 @@ class FireworksPainter extends CustomPainter {
   }
 
   void drawFirework(Canvas canvas, Paint paint, Firework firework) {
-    final start = firework.center;
+    paint.color = firework.color;
+    for (int i = 0; i < firework.pathMetrics.length; i++) {
+      double endProgressTime = firework.startTime + firework.duration / totalDuration;
+      if ((progress > firework.startTime) && (progress < endProgressTime)) {
+        final currentProgress = (progress - firework.startTime) * totalDuration / firework.duration;
+        Path extractPath = firework.pathMetrics[i].extractPath(
+          0.0,
+          firework.pathMetrics[i].length * currentProgress,
+        );
+        canvas.drawPath(extractPath, paint);
+      }
+    }
+
+    /* final start = firework.center;
     final endPoints = firework.endPoints;
     final path = Path();
     for (int i = 0; i < endPoints.length; i++) {
@@ -63,6 +74,8 @@ class FireworksPainter extends CustomPainter {
         canvas.drawPath(extractPath, paint);
       }
     }
+
+    */
   }
 
   /*

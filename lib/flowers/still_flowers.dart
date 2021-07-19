@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:animaplay/flowers/wave_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:generative_art/flowers/wave_painter.dart';
 
 import 'controller_flower_colors.dart';
 import 'controller_petal_number.dart';

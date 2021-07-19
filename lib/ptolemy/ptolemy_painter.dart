@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:animaplay/ptolemy/fixed_points_for_ptolemy.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:generative_art/ptolemy/fixed_points_for_ptolemy.dart';
 
 class PtolemyPainter extends CustomPainter {
   PtolemyPainter({

@@ -1,7 +1,7 @@
 import 'dart:ui';
 
-import 'package:animaplay/lines/lines.dart';
 import 'package:flutter/material.dart';
+import 'package:generative_art/lines/lines.dart';
 
 class LinePainter extends CustomPainter {
   LinePainter({

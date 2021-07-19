@@ -1,5 +1,5 @@
-import 'package:animaplay/fibonacci/fibonacci_calcs.dart';
 import 'package:flutter/material.dart';
+import 'package:generative_art/fibonacci/fibonacci_calcs.dart';
 
 import '../animation_controller_buttons.dart';
 import 'fibonacci_painter.dart';
@@ -83,7 +83,7 @@ class _FibonacciSpiralState extends State<FibonacciSpiral> with SingleTickerProv
       body: CustomPaint(
         foregroundPainter: FibonacciPainter(
           squares: _fibSquares,
-          spiralPath: _spiralPath,
+          path: _spiralPath,
           progress: _controller.value,
           showSquares: true,
         ),

@@ -1,5 +1,5 @@
-name: animaplay
-description: Mess around with animations
+name: 'generative_art'
+description: Mess around with generative art in CustomPainter
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 

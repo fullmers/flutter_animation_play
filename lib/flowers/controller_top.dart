@@ -52,7 +52,7 @@ class ControllerTop extends StatelessWidget {
               child: Container(
                   height: 30,
                   width: 30,
-                  child: isControllerOpen ? Icon(Icons.expand_less) : Icon(Icons.expand_more),
+                  child: isControllerOpen ? Icon(Icons.expand_more) : Icon(Icons.expand_less),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(3)),
                     color: Colors.blueGrey[100],

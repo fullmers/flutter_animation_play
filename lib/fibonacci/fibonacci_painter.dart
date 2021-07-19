@@ -7,7 +7,7 @@ import 'fibonacci_square.dart';
 /// [FibonacciPainter] animates a Fibonacci spiral and optionally paints the squares framing the spiral.
 class FibonacciPainter extends CustomPainter {
   FibonacciPainter({
-    required this.spiralPath,
+    required this.path,
     required this.progress,
     required this.squares,
     this.showSquares = false,
@@ -17,7 +17,7 @@ class FibonacciPainter extends CustomPainter {
   final List<FibonacciSquare> squares;
 
   /// the path of the fibonacci spiral
-  final Path spiralPath;
+  final Path path;
 
   /// a value between 0.0 and 1.0 indicating the total progress of the animation. It comes from
   /// the animation controller in the calling widget and is used to control the path length,
@@ -41,7 +41,7 @@ class FibonacciPainter extends CustomPainter {
     }
     paint.strokeWidth = 4;
     paint.color = Colors.pink[300]!;
-    List<PathMetric> pathMetrics = spiralPath.computeMetrics().toList(growable: true);
+    List<PathMetric> pathMetrics = path.computeMetrics().toList(growable: true);
     PathMetric lastPathMetric = pathMetrics.removeLast();
     Path extractPath = lastPathMetric.extractPath(
       0.0,

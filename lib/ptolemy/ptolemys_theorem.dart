@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:animaplay/animation_controller_buttons.dart';
-import 'package:animaplay/ptolemy/fixed_points_for_ptolemy.dart';
-import 'package:animaplay/ptolemy/ptolemy_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:generative_art/animation_controller_buttons.dart';
+import 'package:generative_art/ptolemy/fixed_points_for_ptolemy.dart';
+import 'package:generative_art/ptolemy/ptolemy_painter.dart';
 
 /// The page which shows an animation illustrating a special case of Ptolemy's theorem
 /// Inspired by: https://myfusimotors.com/2019/01/21/ptolemys-theorem-proof/

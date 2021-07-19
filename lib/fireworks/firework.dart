@@ -9,6 +9,7 @@ class Firework {
     required this.numArms,
     required this.duration,
     required this.endPoints,
+    required this.pathMetrics,
   });
 
   final Offset center;
@@ -18,4 +19,5 @@ class Firework {
   final double duration;
   final int numArms;
   final List<Offset> endPoints;
+  final List<PathMetric> pathMetrics;
 }

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,7 @@ class Fireworks extends StatefulWidget {
 class _FireworksState extends State<Fireworks> with SingleTickerProviderStateMixin {
   /// the duration of the animation (that, is the time it takes to draw the spiral).
   /// Milliseconds.
-  final int _durationInMs = 10000;
+  final int _durationInMs = 5000;
 
   late AnimationController _controller;
   final List<Firework> fireworks = [];
@@ -110,27 +111,33 @@ class _FireworksState extends State<Fireworks> with SingleTickerProviderStateMix
   void _createFireworks() {
     fireworks.clear();
     final _random = Random();
-    final minArms = 10;
+    final minArms = 12;
     final minRadius = 10;
 
-    final numFireworks = 200;
+    final numFireworks = 30;
 
     for (int i = 0; i < numFireworks; i++) {
       final r = minRadius + _random.nextDouble() * 50;
       final armCount = (minArms + _random.nextDouble() * minArms).floor();
       final center = getRandomCenter(screenSize);
+      final endpoints = _createEndPoints(
+        numArms: armCount,
+        r: r,
+        center: center,
+      );
+      final pathMetrics = _createPathMetrics(
+        center,
+        endpoints,
+      );
       Firework firework = Firework(
         center: center,
         r: r,
         color: getRandomColor(),
         startTime: _random.nextDouble(),
-        duration: 2000.0 * _random.nextDouble() + 500,
+        duration: 1000, //2000.0 * _random.nextDouble() + 2000,
         numArms: armCount,
-        endPoints: _createEndPoints(
-          numArms: armCount,
-          r: r,
-          center: center,
-        ),
+        endPoints: endpoints,
+        pathMetrics: pathMetrics,
       );
       fireworks.add(firework);
     }
@@ -150,5 +157,26 @@ class _FireworksState extends State<Fireworks> with SingleTickerProviderStateMix
       endPoints.add(endPt);
     }
     return endPoints;
+  }
+
+  List<PathMetric> _createPathMetrics(Offset center, List<Offset> endPoints) {
+    final start = center;
+    final path = Path();
+    final List<Path> paths = [];
+    for (int i = 0; i < endPoints.length; i++) {
+      path.moveTo(start.dx, start.dy);
+      path.lineTo(endPoints[i].dx, endPoints[i].dy);
+    }
+
+    List<PathMetric> pathMetrics = path.computeMetrics().toList(growable: true);
+    for (int i = 0; i < pathMetrics.length; i++) {
+      final pathMetric = pathMetrics[i];
+      Path extractPath = pathMetric.extractPath(
+        0.0,
+        pathMetric.length,
+      );
+      paths.add(extractPath);
+    }
+    return pathMetrics;
   }
 }

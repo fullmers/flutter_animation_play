@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:animaplay/flowers/controller_flower_colors.dart';
-import 'package:animaplay/flowers/controller_petal_number.dart';
-import 'package:animaplay/flowers/controller_wave_colors.dart';
-import 'package:animaplay/flowers/wave_painter.dart';
 import 'package:flutter/material.dart';
+import 'package:generative_art/flowers/controller_flower_colors.dart';
+import 'package:generative_art/flowers/controller_petal_number.dart';
+import 'package:generative_art/flowers/controller_wave_colors.dart';
+import 'package:generative_art/flowers/wave_painter.dart';
 
 import 'controller_top.dart';
 import 'flower.dart';

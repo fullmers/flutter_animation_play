@@ -1,6 +1,6 @@
-import 'package:animaplay/ptolemy/ptolemys_theorem.dart';
-import 'package:animaplay/tiles/tiles.dart';
 import 'package:flutter/material.dart';
+import 'package:generative_art/ptolemy/ptolemys_theorem.dart';
+import 'package:generative_art/tiles/tiles.dart';
 
 import 'fibonacci/fibonacci_spiral.dart';
 import 'fireworks/fireworks.dart';
@@ -10,10 +10,11 @@ import 'lines/lines.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: Fireworks(
+    home: MyApp(),
+    /*Fireworks(
       title: 'Fireworks',
-    ),
-    title: 'Play with animations',
+    ), */
+    title: 'Play with generative art',
     theme: ThemeData(
       primarySwatch: Colors.blueGrey,
     ),
@@ -115,6 +116,24 @@ class MyApp extends StatelessWidget {
                 builder: (context) {
                   return FibonacciSpiral(
                     title: 'Fibonacci Spiral',
+                  );
+                },
+              ),
+            );
+          },
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          child: Container(
+            child: Text('Fireworks'),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return Fireworks(
+                    title: 'Fireworks',
                   );
                 },
               ),
