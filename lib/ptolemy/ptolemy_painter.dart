@@ -32,7 +32,7 @@ class PtolemyPainter extends CustomPainter {
     _canvas = canvas;
     _canvas?.drawCircle(fixedPts.center, radius, _paint);
 
-    _drawTriangle();
+    _drawFixedTriangle();
 
     final movingPt = _drawMovingDotOnCircle();
 
@@ -53,7 +53,7 @@ class PtolemyPainter extends CustomPainter {
     return movingPt;
   }
 
-  void _drawTriangle() {
+  void _drawFixedTriangle() {
     _paint.color = Colors.grey;
     _paint.style = PaintingStyle.fill;
     _canvas?.drawCircle(fixedPts.refTrianglePt1, dotRadius, _paint);
